@@ -1,92 +1,94 @@
-# Kurzbericht: FDOx-Squirrel-Familie — Stand & offene To-Dos
+# FDOx-Squirrel-Plan — Stand & offene To-Dos
 
-Stand: 03.09.2026, basierend auf den heutigen Chats in diesem Projekt sowie einem Live-Check der GitHub-Org `FDOx-squirrel` und des Repos `n4o-rse/n4o-kg-profile`.
+Stand: 03.09.2026, vollständiger Live-Audit aller Repos in [github.com/FDOx-squirrel](https://github.com/FDOx-squirrel) (geklont, `PRIMER.md`/Commit-Historie ausgewertet) plus `n4o-rse/n4o-kg-profile`. Dieses Dokument liegt selbst in [`fdo-architecture/FDOx-Squirrel-Plan.md`](https://github.com/FDOx-squirrel/fdo-architecture/blob/main/FDOx-Squirrel-Plan.md) und soll als lebendes Dokument fortgeschrieben werden — bei jeder größeren Änderung an einem Familienmitglied hier nachziehen.
 
 ## Familie im Überblick
 
-Alle sieben Repos liegen jetzt unter **[github.com/FDOx-squirrel](https://github.com/FDOx-squirrel)** — die Migration von `Research-Squirrel-Engineers` ist abgeschlossen (alte URLs leiten per 301 auf die neue Org um). Live geprüft: welche Repos schon Inhalt haben und welche noch leer sind (angelegt, aber kein Commit).
+Alle sieben Repos liegen unter `FDOx-squirrel`, **alle sieben haben inzwischen Inhalt** (beim letzten Stand waren vier noch leer — die ausstehenden Pushes sind erledigt).
 
-| Repo | Rolle | Live-Status |
+| Repo | Rolle | Status (S-Schritte laut `PRIMER.md`, falls vorhanden) |
 |---|---|---|
-| [`fdo-squirrel`](https://github.com/FDOx-squirrel/fdo-squirrel) | Generator: baut `fdo-metadata.ttl` aus einem FDO-Paket | ✅ hat Inhalt (umgezogen) |
-| [`fdo-squirrel-registry`](https://github.com/FDOx-squirrel/fdo-squirrel-registry) | Erntet von Zenodo, baut DCAT-Bundle + CRM-Bridge, SHACL-Gate, N4O-Export, SPARQL/Facetten-Seite | ✅ hat Inhalt (umgezogen) |
-| [`fdo-squirrel-md-generator`](https://github.com/FDOx-squirrel/fdo-squirrel-md-generator) | Web-Generator für `MD.cff` (Analogie zu CFF-Initializer) | ✅ hat Inhalt |
-| [`fdo-squirrel-spec`](https://github.com/FDOx-squirrel/fdo-squirrel-spec) | ReSpec-HTML-Doku des Metadatenformats | ⬜ leer — ZIP liegt bereit, noch nicht gepusht |
-| [`fdo-architecture`](https://github.com/FDOx-squirrel/fdo-architecture) | Meta-Repo: `registry.yaml` + Mermaid-Übersicht der ganzen Familie | ⬜ leer — Patch liegt bereit, noch nicht angewendet |
-| [`fdo-3d-packager`](https://github.com/FDOx-squirrel/fdo-3d-packager) | Sketchfab/lokales 3D-Modell → fertiges `fdo:3DDataFDO`-Paket | ⬜ leer — S1-ZIP liegt bereit, noch nicht gepusht |
-| [`fdo-git-packager`](https://github.com/FDOx-squirrel/fdo-git-packager) | Git-Repo (fester Commit) → fertiges `fdo:SoftwareFDO`-Paket | ⬜ leer — S1-ZIP liegt bereit, noch nicht gepusht |
+| [`fdo-squirrel`](https://github.com/FDOx-squirrel/fdo-squirrel) | Referenzimplementierung: liest ein FDO-Paket (ZIP), schreibt `fdo-metadata.ttl` | Kein `PRIMER.md` (älter als die Familienkonvention). v0.1, publiziert (Zenodo DOI 10.5281/zenodo.18441772). Laufend gepflegt — siehe unten. |
+| [`fdo-squirrel-registry`](https://github.com/FDOx-squirrel/fdo-squirrel-registry) | Erntet von Zenodo, DCAT-Bundle + CRM-Bridge, SHACL-Gate, N4O-Export, Facetten- + SPARQL-Seite | **S0–S7 fertig.** S8 (Registry als FDO, Release/CI) und S9 (N4O-Andockung) offen. |
+| [`fdo-squirrel-md-generator`](https://github.com/FDOx-squirrel/fdo-squirrel-md-generator) | Web-Generator für `MD.cff`+`CITATION.cff` | Nur `PRIMER.md` im Repo. **S0 (Entscheidungen) fertig, S1–S7 (aller Code) offen.** |
+| [`fdo-squirrel-spec`](https://github.com/FDOx-squirrel/fdo-squirrel-spec) | ReSpec-HTML-Doku des Metadatenformats | **S1 fertig** (`docs/index.html` rendert offline). S2 (echtes Beispiel statt kaputtem Demo-TTL), S3 (`fetch` auf Tag statt `main` pinnen) offen. |
+| [`fdo-architecture`](https://github.com/FDOx-squirrel/fdo-architecture) | Meta-Repo: `registry.yaml` + Mermaid-Übersicht + dieser Plan | **S0–S1 fertig.** `registry.yaml` ist veraltet — siehe To-Do unten. |
+| [`fdo-3d-packager`](https://github.com/FDOx-squirrel/fdo-3d-packager) | Sketchfab/lokales 3D-Modell → `fdo:3DDataFDO`-Paket | **S0–S1 fertig** (Skeleton, 7 Schritte). S2–S7 (Implementierung) offen. |
+| [`fdo-git-packager`](https://github.com/FDOx-squirrel/fdo-git-packager) | Git-Repo (fester Commit) → `fdo:SoftwareFDO`-Paket | **S0–S1 fertig** (Skeleton, 6 Schritte). S2–S6 (Implementierung) offen. |
 
-**Verwandtes externes Repo (andere Org, kein Teil der FDOx-squirrel-Familie, aber Abnehmer/Partner):**
+**Verwandtes externes Repo (andere Org, kein Teil der Familie, aber Abnehmer/Partner):**
 
-| Repo | Rolle | Live-Status |
+| Repo | Rolle | Status |
 |---|---|---|
-| [`n4o-rse/n4o-kg-profile`](https://github.com/n4o-rse/n4o-kg-profile) | Projektübergreifendes Werkzeug: aus `metadata.yaml` per GitHub Action Metadaten-RDF, CIDOC-CRM-Anbindung und eine browserbasierte SPARQL-Seite erzeugen, damit eine Collection in den **NFDI4Objects Knowledge Graph** aufgenommen werden kann | ✅ hat jetzt echten Inhalt (`profile/`, `build/`, `example/` mit Beispieldaten, `action.yml`) — war beim letzten Check noch leer |
+| [`n4o-rse/n4o-kg-profile`](https://github.com/n4o-rse/n4o-kg-profile) | Projektübergreifendes Werkzeug: `metadata.yaml` → per GitHub Action Metadaten-RDF, CIDOC-CRM-Anbindung, browserbasierte SPARQL-Seite, damit eine Collection in den NFDI4Objects Knowledge Graph aufgenommen werden kann | Hat jetzt echten Inhalt (`profile/`, `build/`, `action.yml`, `example/` mit Beispieldaten). **Aber:** in `fdo-squirrel-registry`s aktuellem `PRIMER.md` (S8/S9) taucht dieses Repo nirgends auf — siehe Abhängigkeit 4 unten. |
 
 ---
 
 ## Status & To-Dos je Repo
 
 ### `fdo-squirrel`
-- ✅ Patch #1 (S1–S4) angewendet: CRM-Klassen-IRIs korrigiert, `xsd:gYear` statt Integer, GeoSPARQL-BBox als typisiertes Envelope-Literal, fehlende `rdfs:label` ergänzt.
-- ✅ S5 geklärt: **kein Bug** — die drei älteren Pakete (Jan.) tragen die ORCID korrekt, die vier neueren (Feb.) haben ein leeres `orcid:`-Feld in `CITATION.cff` (Datenlücke, nicht Code).
-- 🔶 **Feature "fertiges Bundle-ZIP"** (Original-ZIP + generierte Dateien inkl. Distribution-Modellierung + hochauflösendem Mermaid-JPG) ist implementiert und verifiziert, Auslieferung als Patch #2 stand kurz bevor.
-  - **To-Do:** Patch #2 abholen/anwenden, sobald geliefert.
-- **To-Do (optional, S6):** In den Original-`CITATION.cff` der vier neueren Zenodo-Pakete nachsehen, ob ORCID wirklich fehlt oder nur nicht befüllt wurde.
+Kein `PRIMER.md`, daher aus der Commit-Historie abgelesen statt aus einer Schritttabelle. Seit dem letzten Bericht sind mehrere weitere Fixes gelandet, zusätzlich zu den beiden bekannten Patches:
+- ✅ Patch #1 (CRM-Klassen-IRIs, `xsd:gYear`, GeoSPARQL-BBox, fehlende Labels).
+- ✅ Patch #2 (`Bundle generated files into one finished FDO package`) — das fertige Bundle-ZIP-Feature ist im Repo, nicht mehr nur verifiziert und wartend.
+- ✅ Weitere, in diesem Projekt bisher nicht dokumentierte Fixes: Mermaid-Diagramm zeigte räumliche/zeitliche Namen nicht an (behoben), Mermaid-Markdown-String-Modus für Diagrammbeschriftungen aktiviert, `MD.cff`-Felder `keywords`/`related_resources` emittierten nicht + ein Datatype-Override-Bug (behoben), `MD.cff`-Identifier erzeugten gar kein RDF (behoben, aktueller HEAD).
+- **To-Do:** Diese letzten vier Fixes sind nicht aus den bisher bekannten Chats dieses Projekts nachvollziehbar — falls sie in einem anderen Chat/Projekt entstanden sind, lohnt es sich, deren Kontext (Ursache, Testabdeckung) hier oder im nächsten `fdo-squirrel`-Chat kurz festzuhalten, damit das Wissen nicht nur im Commit-Message steckt.
+- **To-Do (weiterhin offen, aus dem Registry-Qualitätsbericht):** abgekürzte Klassen-IRIs außerhalb der bereits gepatchten Stellen, `xsd:integer` an weiteren Zeitgrenzen, doppelte Prozentkodierung der `content/`-IRIs (siehe Registry-Sektion), `<DOI>_geom`/`<DOI>_temporal`-IRIs in fremdem Namensraum — alle in `fdo-squirrel-registry/PRIMER.md` Teil D als „Rückfluss nach fdo-squirrel" gesammelt.
+- **Empfehlung:** Da dieses Repo mittlerweile so viele Nachbesserungen bekommt, könnte ein eigenes `PRIMER.md` (nach dem Familienmuster) helfen, den Überblick zu behalten — bisher lebt der Stand nur in Commit-Messages.
 
 ### `fdo-squirrel-registry`
-- ✅ S1–S6 erledigt: Skeleton, Zenodo-Harvest, CRM-Bridge, DCAT-Bundle+Katalog, SHACL-Gate+Qualitätsbericht+N4O-Export, `.gitattributes`/Encoding-Fix.
-- 🔶 S7 (SPARQL-/Facetten-Seite im Browser, `queries.yaml` als einzige Quelle, Pyodide/rdflib) ist konzipiert und angelaufen — genauer Fertigstellungsgrad war in dieser Recherche nicht abschließend zu klären.
-- **To-Do:** Doppelte Prozentkodierung der `content/`-IRIs im eigenen Bundle-Build fixen — Ursache liegt in `content_iri()` der Registry selbst (nicht im Generator, siehe unten).
-- **S9 (N4O-Andockung) hängt jetzt an [`n4o-kg-profile`](https://github.com/n4o-rse/n4o-kg-profile):** Das Repo ist nicht mehr leer — `profile/`, `build/`, `action.yml` und ein `example/` mit echten Beispieldaten (`metadata.yaml`, `queries.yaml`, `rdf/`) liegen vor. Laut dessen README ist das Muster: Collection-Repo pflegt nur `metadata.yaml`, eine GitHub Action (referenziert `n4o-kg-profile` als `@v1`-Tag) erzeugt daraus RDF, CIDOC-CRM-Anbindung und eine SPARQL-Seite; die VZG bindet das Ergebnis danach manuell in den N4O-KG ein. **To-Do:** prüfen, ob `fdo-squirrel-registry`s eigener S8/S9-Weg (`dist/fdo-registry-n4o.ttl`, `n4o-collections.json`) jetzt durch dieses Muster ersetzt oder nur ergänzt wird — in PRIMER.md Teil D als offen vermerkt, jetzt mit echtem Repo-Inhalt neu zu bewerten.
-- ⚠️ Ein Chat zum Erstellen einer Arbeitsanweisung für "S6b" brach unerklärt ab — falls das nochmal passiert, eher in kleineren Einzelschritten arbeiten.
+- ✅ **S0–S7 vollständig erledigt:** Skeleton, Zenodo-Harvest, CRM-Crosswalk, DCAT-Bundle, SHACL-Gate + Qualitätsbericht, Registry-Index + Facettenseite, S6b (Autoescape-Fix), SPARQL-Seite. Das ist mehr, als der letzte Bericht zeigte — S7 war zum letzten Check noch als „angelaufen" markiert, ist laut `PRIMER.md` jetzt fertig.
+- **Offen: S8 — Registry als FDO, Release und CI.** `MD.cff`+`CITATION.cff` fürs Repo selbst, `fdo_type` noch zu entscheiden (`fdo:AnalysisFDO` oder neuer `fdo:RegistryFDO` — betrifft dann `fdo-squirrel`), Bundle+Index+Shapes als ZIP durch `fdo-squirrel` schicken und auf Zenodo publizieren, zwei GitHub Actions (Gate bei jedem Push, Pages-Deploy).
+- **Offen: S9 — N4O-Andockung.** Eintrag in `n4o-collections.json` (nfdi4objects/n4o-databases), vorher zu klären: Lieferform, Collection vs. Datenbank-Eintrag, Wikidata-Item, Verhältnis zur N4O Objects Ontology (mit A. Noback/A. Gerber) — **dieser Abschnitt referenziert `n4o-kg-profile` nicht**, siehe Abhängigkeit 4.
+- **To-Do:** Doppelte Prozentkodierung der `content/`-IRIs — laut Teil D entschieden, dass der Fix **upstream in `fdo-squirrel`** landet, nicht hier; Zeitpunkt hängt am Qualitätsbericht.
+- Weitere in Teil D gesammelte, noch offene Kleinigkeiten: Label-Pflege für fremde IRIs (`registry/labels.json`, aktuell 14 Einträge, von Hand), kein Einreichungsweg für Dritte, nur Zenodo als Quelle, vier von sieben TTL im Bestand mit deklarierten Reparaturen statt sauberen Originalen.
 
 ### `fdo-squirrel-spec`
-- ✅ Fertig gebaut und als komplettes Repo-ZIP geliefert (kein Patch, da Zielrepo leer).
-- **To-Do:** Repo ist live bestätigt leer (angelegt, kein Commit) — ZIP entpacken, committen, pushen.
+- ✅ S1 fertig (gepusht, `docs/index.html` rendert offline).
+- **To-Do S2:** echtes, valides `fdo-metadata.ttl` als Vorzeigebeispiel statt des kaputten Demo-TTL — offene Frage, ob aus `fdo-squirrel-registry` referenziert oder eine eigene kuratierte Minimalinstanz gepflegt wird.
+- **To-Do S3:** `fetch` von `main`-Branch auf einen festen Tag umstellen, sobald `fdo-squirrel` Releases taggt.
+- Kleinigkeit: ORCID in `CITATION.cff` ist noch Platzhalter.
 
 ### `fdo-squirrel-md-generator`
-- ✅ Planung (PRIMER.md) fertig, Mapping-Entscheidungen bestätigt (automatische FDO-Ableitung nur für `fdo:3DDataFDO`, Autoren immer als CFF-Entity, unbekannte Identifier-Schemata → `type: other`).
-- **To-Do:** S1 — eigentliches Repo-Skelett/erster Code steht noch aus, bisher nur Dokumentation.
+- ✅ S0 (alle Entscheidungen: Tech-Stack, Schema-Quelle, Mapping-Regeln) fertig.
+- **To-Do:** Immer noch **kein Code** — S1 (Skeleton) bis S7 (`CITATION.cff`-Ableitung) sind alle offen, das Repo enthält bislang nur `PRIMER.md`. Von allen sieben Repos das mit dem größten Rückstand zwischen Planung und Umsetzung.
 
 ### `fdo-architecture`
-- ✅ S1 geliefert: `registry.yaml` (5 Familienmitglieder) + `main.py` (`validate`/`render`) + generiertes Mermaid-Diagramm/`docs/index.html`.
-- **To-Do:** Repo ist live bestätigt leer — Patch anwenden und pushen (stand bei Gesprächsende noch aus).
-- Zwei Stellen bewusst als unsicher markiert: Kante `md-generator → fdo-squirrel` (nur aus dem Repo-Namen erschlossen) sowie `org`/`url`-Felder für `fdo-squirrel`/`-registry` (zeigten zum Zeitpunkt der Erstellung noch auf die alte Org — jetzt mit der abgeschlossenen Migration von Hand nachzuziehen).
-- Vorgeschlagen, aber noch **nicht umgesetzt**: CI-Workflow (`--strict` bei jedem Push), `check-links`-Schritt gegen echte GitHub-URLs, Cross-Repo-Backlog im Architektur-Repo, Rücklinks in den READMEs der anderen Repos. Sobald es gepusht ist, wäre `n4o-kg-profile` als achter Eintrag (bzw. als verwandtes externes Repo) ein Kandidat für `registry.yaml`.
+- ✅ S0–S1 fertig, `FDOx-Squirrel-Plan.md` (dieses Dokument) liegt im Repo.
+- **To-Do — `registry.yaml` ist veraltet**, in drei Punkten:
+  1. Fehlt: `fdo-3d-packager` und `fdo-git-packager` als Einträge.
+  2. `org`-Feld für `fdo-squirrel` und `fdo-squirrel-registry` steht noch auf `Research-Squirrel-Engineers` — beide sind längst zu `FDOx-squirrel` umgezogen.
+  3. `status`-Text für `fdo-squirrel-registry` sagt noch „im Bau" — tatsächlich S0–S7 fertig (siehe oben).
+  4. Zu klären, ob `n4o-kg-profile` als externes System (wie `squirrelbase`) aufgenommen wird, sobald sein Verhältnis zur Registry geklärt ist (Abhängigkeit 4).
+- Vorgeschlagen, aber noch **nicht umgesetzt**: CI-Workflow (`--strict` bei jedem Push), `check-links`-Schritt gegen echte GitHub-URLs, Cross-Repo-Backlog im Architektur-Repo, Rücklinks in den READMEs der anderen Repos.
 
 ### `fdo-3d-packager`
-- Zweck: Sketchfab-Modell (`--sketchfab URL`) oder lokale Datei (`--local PATH`) → fertiges FDO-Paket im von `fdo-squirrel` erwarteten Layout (`MD.cff`+`CITATION.cff`, `fdo_type: fdo:3DDataFDO`). Baut auf einem Sketchfab-Prototyp auf (Blender-Konvertierung, Nexus-Multiresolution, 3DHOP-Miniviewer).
-- ✅ S0 (Name/Org/Format-Entscheidungen) und S1 (lauffähiges Skeleton, 7 Schritte `fetch→convert→nexus→mdcff→bundle→build_fdo`) fertig geliefert als konsolidiertes Initial-Commit-ZIP.
-- ✅ Entschieden: Viewer wandert mit ins FDO-ZIP; `distributions[]` wird **nicht** vom Packager vorbefüllt, sondern von `fdo-squirrel` selbst klassifiziert.
-- **To-Do:** Repo ist live bestätigt leer — ZIP als Initial Commit pushen; S2–S7 (eigentliche Implementierung) stehen noch aus.
-- **Offen:** Wie wird `fdo-squirrel` in S7 technisch eingebunden (pip aus GitHub, Git-Submodule, oder externer Pfad)? Diese Frage ist identisch mit der von `fdo-git-packager` — wird nur einmal entschieden, für beide Repos übernommen.
+- Zweck: Sketchfab-Modell oder lokale Datei → fertiges `fdo:3DDataFDO`-Paket im `fdo-squirrel`-Layout (Viewer inklusive, `distributions[]` bewusst nicht vorbefüllt).
+- ✅ S0–S1 fertig und gepusht (Initial Commit).
+- **To-Do:** S2–S7 (`fetch`, `convert`, `nexus`, `mdcff`, `bundle`, `build_fdo`) sind alle noch Stubs.
+- **Offen:** Einbindungsmechanismus für `fdo-squirrel` in S7 (pip aus GitHub, Git-Submodule oder externer Pfad) — identisch mit der offenen Frage bei `fdo-git-packager`, einmal klären gilt für beide.
 
 ### `fdo-git-packager`
-- Zweck: Git-Repo + fester Commit-SHA → fertiges FDO-Paket (`fdo_type: fdo:SoftwareFDO`). Schwester-Repo zu `fdo-3d-packager`, bewusst separat gehalten (unterschiedliche `fetch`/`convert`-Logik, Familienregel „Kopieren statt Referenzieren").
-- ✅ S0-Entscheidungen: kompletter Working Tree (mit Exclude-Liste `.git/`, `node_modules/`, `build/` etc.), fester Commit-SHA als Pflichtangabe (kein Branch-HEAD-Fallback), Titel/Autor/Lizenz aus GitHub-API-Vorschlag + CLI-Override.
-- ⚠️ Wichtiger Befund dabei: Der Working Tree muss **flach auf ZIP-Root** liegen, nicht unter einem Unterordner wie `repo/` — sonst greifen die `path_prefix`-Klassifikationsregeln von `fdo-squirrel` (z. B. `tests/`) nicht mehr.
-- ✅ S1 (Skeleton, 6 Schritte `fetch→inspect→mdcff→bundle→build_fdo`) fertig geliefert als Initial-Commit-ZIP.
-- **To-Do:** Repo ist live bestätigt leer — ZIP pushen; S2–S6 stehen noch aus.
-- **Offen:** Gleiche `fdo-squirrel`-Einbindungsfrage wie oben; außerdem unbestätigt, ob eine im Ziel-Repo vorhandene `CITATION.cff` wirklich immer Vorrang vor einer synthetisierten haben soll (bisher nur Vorschlag, kein Beschluss per Rückfrage).
+- Zweck: Git-Repo + fester Commit-SHA → fertiges `fdo:SoftwareFDO`-Paket, Working Tree flach auf ZIP-Root (sonst greifen `fdo-squirrel`s `path_prefix`-Klassifikationsregeln nicht).
+- ✅ S0–S1 fertig und gepusht (Initial Commit).
+- **To-Do:** S2–S6 (`fetch`, `inspect`, `mdcff`, `bundle`, `build_fdo`) sind alle noch Stubs.
+- **Offen:** gleiche `fdo-squirrel`-Einbindungsfrage wie oben; zusätzlich unbestätigt, ob eine im Ziel-Repo vorhandene `CITATION.cff` wirklich immer Vorrang vor einer synthetisierten haben soll.
 
 ### `n4o-kg-profile` (extern, Org `n4o-rse`)
-- Kein Teil der FDOx-squirrel-Familie im engeren Sinn, aber direkter Abnehmer/Partner: Standardwerkzeug, um eine beliebige Collection (nicht nur FDOx) in den NFDI4Objects Knowledge Graph aufzunehmen.
-- Muster laut README: *Source-Repo* (baut das Bundle) → *Collection-Repo* (pflegt nur `metadata.yaml` + `rdf/<name>-bundle.ttl`, referenziert `n4o-kg-profile` als versionierten Tag `@v1` in einer GitHub Action) → `n4o-kg-profile` selbst (liefert `profile/` + `build/`: Metadaten-RDF, CIDOC-CRM-Crosswalk, SPARQL-Seite via GitHub Pages).
-- ✅ Jetzt mit echtem Inhalt: `profile/profile.ttl`, `profile/shapes.ttl`, `profile/context.jsonld`, `profile/CROSSWALK.md`, `build/make_metadata.py`, `build/build_sparql.py`, `action.yml`, plus ein vollständiges `example/` (`metadata.yaml`, `queries.yaml`, generierte `dist/`/`docs/`).
-- **Relevanz für diese Familie:** `fdo-squirrel-registry`s S8/S9 (siehe oben) soll darüber laufen; die generelle Bundle→Zenodo→SHACL→N4O-Kette könnte künftig auch für `fdo-3d-packager`/`fdo-git-packager`-Pakete interessant werden, sobald die manuell aus `fdo-squirrel` erzeugten Bundles veröffentlicht werden sollen.
-- **To-Do:** `example/` als Referenz durchgehen und klären, ob `fdo-squirrel-registry` künftig selbst ein Collection-Repo im Sinne dieses Musters wird (eigenes `metadata.yaml` + Action statt der bisherigen S8/S9-Eigenlösung), oder ob beide Wege parallel bestehen bleiben.
+- Muster: *Source-Repo* baut das Bundle → *Collection-Repo* pflegt nur `metadata.yaml` + `rdf/<name>-bundle.ttl`, referenziert `n4o-kg-profile` als versionierten Tag (`@v1`) in einer GitHub Action → `n4o-kg-profile` liefert `profile/` + `build/` (Metadaten-RDF, CIDOC-CRM-Crosswalk, SPARQL-Seite via GitHub Pages).
+- ✅ Hat jetzt echten Inhalt: `profile/profile.ttl`, `profile/shapes.ttl`, `profile/context.jsonld`, `profile/CROSSWALK.md`, `build/make_metadata.py`, `build/build_sparql.py`, `action.yml`, ein vollständiges `example/`.
+- **To-Do:** siehe Abhängigkeit 4 — klären, ob und wie `fdo-squirrel-registry`s S8/S9 dieses Muster nutzt.
 
 ---
 
 ## Abhängigkeiten
 
-1. **`fdo-squirrel` Patch #2 → `fdo-squirrel-registry`**: Die Registry harvestet die von `fdo-squirrel` erzeugten TTLs/Bundles; das neue Bundle-ZIP-Feature sollte vor dem nächsten Harvest-Lauf angewendet sein.
-2. **Prozentkodierungs-Fix gehört in die Registry**, nicht in `fdo-squirrel` — blockiert aktuell nichts, sollte aber vor dem nächsten Bundle-Rebuild in der Registry nachgezogen werden.
-3. **Org-Migration ist abgeschlossen** — alle sieben Familien-Repos liegen jetzt unter `FDOx-squirrel`. Dokumente/Configs, die noch die alte Org (`Research-Squirrel-Engineers`) referenzieren (z. B. `registry.yaml` in `fdo-architecture`, sobald gepusht), müssen von Hand nachgezogen werden — technisch unkritisch, da GitHub die alten URLs per 301 weiterleitet, aber für Konsistenz zu erledigen.
-4. **`n4o-kg-profile` ist nicht mehr leer** — `fdo-squirrel-registry`s S8/S9 (N4O-Andockung) war bisher als Eigenlösung geplant (`dist/fdo-registry-n4o.ttl`, `n4o-collections.json`), jetzt mit echtem Repo-Inhalt neu zu bewerten: ersetzt das Collection-Repo-Muster von `n4o-kg-profile` diesen Weg, ergänzt es ihn, oder bleiben beide parallel bestehen?
-5. **`fdo-3d-packager`/`fdo-git-packager` → `fdo-squirrel`-Einbindung**: Beide neuen Packager brauchen für ihren letzten Schritt (Rundlauf-Test) eine Antwort auf dieselbe offene Frage, wie eine lokale `fdo-squirrel`-Instanz technisch eingebunden wird (pip/Submodule/externer Pfad) — einmal klären, gilt für beide.
-6. **RSE-Tauglichkeit der ganzen Familie** (CITATION.cff-ORCIDs, Zenodo-Releases pro Repo, einheitliche CONTRIBUTING.md) ist als nächster großer Block angekündigt, aber noch nicht begonnen — sinnvollerweise erst nach den offenen Patches oben.
+1. **`fdo-squirrel`s neueste Fixes → `fdo-squirrel-registry`**: Vier weitere Fixes (Mermaid-Diagramm, `MD.cff`-Keywords/Identifiers) sind seit dem letzten Bericht gelandet. Vor dem nächsten Registry-Harvest-Lauf lohnt ein Blick, ob sich dadurch der Qualitätsbericht (`dist/quality_report.md`) verbessert hat.
+2. **Doppelte Prozentkodierung** bleibt Aufgabe der Registry (`content_iri()`), nicht von `fdo-squirrel` — Entscheidung steht fest in `fdo-squirrel-registry/PRIMER.md` Teil D.
+3. **`fdo-architecture`/`registry.yaml` ist veraltet** (siehe oben, drei konkrete Punkte) — sollte vor der nächsten Diagramm-Generierung aktualisiert werden, sonst zeigt das öffentliche Familienbild einen falschen Stand.
+4. **`n4o-kg-profile` ↔ `fdo-squirrel-registry` S8/S9 — Widerspruch zu klären.** Frühere Chats in diesem Projekt hatten einen Hinweis auf `n4o-kg-profile` als projektübergreifendes Muster für S8/S9 vorbereitet; **im aktuell live stehenden `PRIMER.md` der Registry ist davon nichts zu finden** — S9 beschreibt weiterhin ausschließlich den `n4o-collections.json`/`n4o-graph-importer`-Weg. Das ist entweder ein noch nicht angewendeter Patch oder eine bewusste spätere Korrektur — vor S8/S9 zu klären, welcher Weg tatsächlich gilt, bevor daran weitergebaut wird.
+5. **`fdo-3d-packager`/`fdo-git-packager` → `fdo-squirrel`-Einbindung**: gemeinsame offene Design-Frage, einmal klären genügt für beide.
+6. **RSE-Tauglichkeit der ganzen Familie** (CITATION.cff-ORCIDs, Zenodo-Releases pro Repo, einheitliche CONTRIBUTING.md) weiterhin angekündigt, noch nicht begonnen.
 
 ---
 
-*Hinweis: Dieser Bericht fasst den bisherigen Gesprächsverlauf in diesem Projekt zusammen und wurde zuletzt gegen den Live-Zustand der GitHub-Org `FDOx-squirrel` sowie `n4o-rse/n4o-kg-profile` geprüft (03.09.2026). Bei Unsicherheiten zu einzelnen Schritten (z. B. genauer S7-Stand der Registry) lohnt ein Blick ins jeweilige `PRIMER.md` des Repos. Dieses Dokument kann als gemeinsamer Ausgangspunkt für neue Chats zu einzelnen Repos dienen.*
+*Hinweis: Dieser Stand basiert auf einem vollständigen Klon aller sieben Repos plus `n4o-kg-profile` am 03.09.2026 (Commit-Historien und `PRIMER.md`-Inhalte ausgewertet), nicht mehr nur auf Chatverlauf. Bei Widersprüchen zwischen diesem Dokument und einem `PRIMER.md` gilt das jeweilige `PRIMER.md` des Repos als genauer — dieses Dokument ist die Zusammenfassung, nicht die Quelle der Wahrheit.*
