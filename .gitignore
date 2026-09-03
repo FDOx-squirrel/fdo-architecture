@@ -1,0 +1,27 @@
+# --- Python ---
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+.pytest_cache/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Note ---
+# dist/ and docs/ are generated but versioned and citable — the repository's
+# actual product (dist/architecture.mmd, docs/index.html). Not ignored.
+# pipeline_report.txt is the exception: it carries per-run timing, which is
+# not byte-stable, so it is a diagnostic log, not a citable product.
+dist/pipeline_report.txt

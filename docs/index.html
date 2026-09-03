@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>FDOx — Architektur</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; color: #1e1b4b; }
+  h1 { margin-bottom: 0.2rem; }
+  .meta { color: #555; font-size: 0.9rem; margin-bottom: 2rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; vertical-align: top; }
+  th { background: #eef2ff; }
+  .mermaid { margin: 2rem 0; }
+  footer { margin-top: 2rem; color: #777; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<h1>FDOx — Architektur</h1>
+<p class="meta">Erzeugt aus <code>registry.yaml</code> per <code>py/step_render.py</code>. Stand: 2026-09-03.</p>
+
+<pre class="mermaid">
+flowchart LR
+    classDef repo fill:#eef2ff,stroke:#4338ca,color:#1e1b4b;
+    classDef external fill:#fef3c7,stroke:#b45309,color:#451a03;
+
+    fdo_squirrel_md_generator["fdo-squirrel-md-generator (FDOx-squirrel)"]
+    fdo_squirrel["fdo-squirrel (Research-Squirrel-Engineers)"]
+    fdo_squirrel_spec["fdo-squirrel-spec (FDOx-squirrel)"]
+    fdo_squirrel_registry["fdo-squirrel-registry (Research-Squirrel-Engineers)"]
+    squirrelbase{{"squirrelbase (external system)"}}
+
+    fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
+    fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
+    fdo_squirrel -- "fdo-metadata.ttl (von Zenodo geerntet..." --> fdo_squirrel_registry
+    fdo_squirrel_registry -- "FDO-URL/DOI je Objekt" --> squirrelbase
+
+    class fdo_squirrel_md_generator repo;
+    click fdo_squirrel_md_generator "https://github.com/FDOx-squirrel/fdo-squirrel-md-generator" "_blank"
+    class fdo_squirrel repo;
+    click fdo_squirrel "https://github.com/Research-Squirrel-Engineers/fdo-squirrel" "_blank"
+    class fdo_squirrel_spec repo;
+    click fdo_squirrel_spec "https://github.com/FDOx-squirrel/fdo-squirrel-spec" "_blank"
+    class fdo_squirrel_registry repo;
+    click fdo_squirrel_registry "https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry" "_blank"
+    class squirrelbase external;
+</pre>
+
+<table>
+  <thead>
+    <tr><th>Repo</th><th>Org</th><th>Rolle</th><th>Status</th><th>Produces</th><th>Consumes</th></tr>
+  </thead>
+  <tbody>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel-md-generator">fdo-squirrel-md-generator</a></td>
+          <td>FDOx-squirrel</td>
+          <td>Erzeugt MD.cff und CITATION.cff fuer ein FDO-Paket.</td>
+          <td>Rolle nur aus dem Repo-Namen erschlossen, nicht am echten Code verifiziert (siehe PRIMER.md Teil D).</td>
+          <td>MD.cff, CITATION.cff (YAML)</td>
+          <td>—</td>
+        </tr>
+        <tr><td><a href="https://github.com/Research-Squirrel-Engineers/fdo-squirrel">fdo-squirrel</a></td>
+          <td>Research-Squirrel-Engineers</td>
+          <td>FDOx-Referenzimplementierung: liest ein FDO-Paket (ZIP), schreibt fdo-metadata.ttl.</td>
+          <td>v0.1, publiziert (Zenodo DOI 10.5281/zenodo.18441772)</td>
+          <td>fdo-metadata.ttl (RDF/Turtle); rdf_modelling_report.json / .html (JSON/HTML)</td>
+          <td>aus fdo-squirrel-md-generator: MD.cff, CITATION.cff (YAML); extern: FDO-Paket (ZIP) (Modell-/Datendateien + Metadaten)</td>
+        </tr>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel-spec">fdo-squirrel-spec</a></td>
+          <td>FDOx-squirrel</td>
+          <td>Dokumentation: rendert eine ReSpec-Seite aus Kopien von Schema, RDF-Crosswalk und Klassifikationsregeln aus fdo-squirrel. Publiziert selbst kein neues RDF.</td>
+          <td>S1 gebaut (2026-09-03), docs/index.html rendert offline</td>
+          <td>docs/index.html (HTML (ReSpec))</td>
+          <td>aus fdo-squirrel: MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml, classification_rules.yaml, package_source.py (YAML/Python)</td>
+        </tr>
+        <tr><td><a href="https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry">fdo-squirrel-registry</a></td>
+          <td>Research-Squirrel-Engineers</td>
+          <td>Erntet auf Zenodo publizierte FDOx-Pakete, buendelt ihre RDF-Beschreibungen zu einem DCAT-Katalog, verankert an CIDOC CRM (N4O-Anwendungsprofil crm-rdf-ap) und SHACL-validiert das Ergebnis, liefert Facetten- und SPARQL-Seite ueber GitHub Pages.</td>
+          <td>im Bau (Stand 2026-09-03)</td>
+          <td>dist/fdo-registry.ttl (RDF/Turtle); dist/registry-index.json (JSON)</td>
+          <td>aus fdo-squirrel: fdo-metadata.ttl (von Zenodo geernteter Pakete) (RDF/Turtle)</td>
+        </tr>
+        <tr><td>squirrelbase</td>
+          <td>—</td>
+          <td>Semantischer Meta-Hub (Wikibase) fuer 3D-Objekte, haelt die FDO-URL je Objekt.</td>
+          <td>produktiv, ausserhalb dieses Plans</td>
+          <td>—</td>
+          <td>aus fdo-squirrel-registry: FDO-URL/DOI je Objekt (Link)</td>
+        </tr>
+  </tbody>
+</table>
+
+<footer>FDOx-squirrel · <a href="https://github.com/FDOx-squirrel">github.com/FDOx-squirrel</a></footer>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+</body>
+</html>

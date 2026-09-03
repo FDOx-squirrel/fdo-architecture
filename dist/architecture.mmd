@@ -1,0 +1,24 @@
+flowchart LR
+    classDef repo fill:#eef2ff,stroke:#4338ca,color:#1e1b4b;
+    classDef external fill:#fef3c7,stroke:#b45309,color:#451a03;
+
+    fdo_squirrel_md_generator["fdo-squirrel-md-generator (FDOx-squirrel)"]
+    fdo_squirrel["fdo-squirrel (Research-Squirrel-Engineers)"]
+    fdo_squirrel_spec["fdo-squirrel-spec (FDOx-squirrel)"]
+    fdo_squirrel_registry["fdo-squirrel-registry (Research-Squirrel-Engineers)"]
+    squirrelbase{{"squirrelbase (external system)"}}
+
+    fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
+    fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
+    fdo_squirrel -- "fdo-metadata.ttl (von Zenodo geerntet..." --> fdo_squirrel_registry
+    fdo_squirrel_registry -- "FDO-URL/DOI je Objekt" --> squirrelbase
+
+    class fdo_squirrel_md_generator repo;
+    click fdo_squirrel_md_generator "https://github.com/FDOx-squirrel/fdo-squirrel-md-generator" "_blank"
+    class fdo_squirrel repo;
+    click fdo_squirrel "https://github.com/Research-Squirrel-Engineers/fdo-squirrel" "_blank"
+    class fdo_squirrel_spec repo;
+    click fdo_squirrel_spec "https://github.com/FDOx-squirrel/fdo-squirrel-spec" "_blank"
+    class fdo_squirrel_registry repo;
+    click fdo_squirrel_registry "https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry" "_blank"
+    class squirrelbase external;

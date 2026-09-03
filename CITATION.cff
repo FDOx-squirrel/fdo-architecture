@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "fdo-architecture: architecture overview of the FDOx repository family"
+abstract: >-
+  A hand-maintained registry.yaml describing the repositories of the FDOx
+  family, their roles, and what artefact each one produces or consumes from
+  another, rendered into a Mermaid diagram and a static overview page. Kept
+  separate from the repositories it describes so that a change to the family
+  does not require touching any of them.
+type: software
+authors:
+  - family-names: Schenk
+    given-names: Fiona
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: insert ORCID
+  - family-names: Thiery
+    given-names: Florian
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: insert ORCID
+license: MIT
+version: "0.1.0"
+date-released: "2026-09-03"
+repository-code: "https://github.com/FDOx-squirrel/fdo-architecture"  # TODO: confirm final repo name
+keywords:
+  - fdo
+  - fair-digital-objects
+  - architecture
+  - linked-data

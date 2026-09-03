@@ -1,0 +1,3 @@
+# PyYAML: registry.yaml is the only input, no version-specific behaviour is
+# load-bearing here, so this is left loose.
+pyyaml

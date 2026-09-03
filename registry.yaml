@@ -1,0 +1,121 @@
+# Source of truth for py/step_render.py (Mermaid diagram + docs/index.html).
+# Edit this file by hand. Never hand-edit docs/index.html or dist/architecture.mmd
+# — both are generated and overwritten by `python main.py render`.
+#
+# Schema per entry under `repos`:
+#   id        unique slug, used as the Mermaid node id and as a `consumes[].from` target
+#   kind      "repo" or "external-system"
+#   org       GitHub org (null for external systems)
+#   url       repo/system URL, or null if none exists yet
+#   role      one sentence, what the thing does
+#   status    free text, dated where it matters
+#   produces  list of {artifact, format, note}
+#   consumes  list of {from, artifact, format, note} — `from` is another entry's
+#             id, or null if the input comes from outside the family
+
+family: fdox
+
+repos:
+  - id: fdo-squirrel-md-generator
+    kind: repo
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-squirrel-md-generator
+    role: >-
+      Erzeugt MD.cff und CITATION.cff fuer ein FDO-Paket.
+    status: >-
+      Rolle nur aus dem Repo-Namen erschlossen, nicht am echten Code
+      verifiziert (siehe PRIMER.md Teil D).
+    produces:
+      - artifact: MD.cff, CITATION.cff
+        format: YAML
+        note: unverifiziert
+    consumes: []
+
+  - id: fdo-squirrel
+    kind: repo
+    org: Research-Squirrel-Engineers
+    url: https://github.com/Research-Squirrel-Engineers/fdo-squirrel
+    role: >-
+      FDOx-Referenzimplementierung: liest ein FDO-Paket (ZIP), schreibt
+      fdo-metadata.ttl.
+    status: "v0.1, publiziert (Zenodo DOI 10.5281/zenodo.18441772)"
+    produces:
+      - artifact: fdo-metadata.ttl
+        format: RDF/Turtle
+        note: "DCAT + FDO Vokabular, Subjekt = dcat:Dataset + fdo:*FDO"
+      - artifact: rdf_modelling_report.json / .html
+        format: JSON/HTML
+        note: Nebenausgabe je Paket
+    consumes:
+      - from: fdo-squirrel-md-generator
+        artifact: MD.cff, CITATION.cff
+        format: YAML
+        note: >-
+          Vermutete Verbindung, nicht verifiziert — siehe PRIMER.md Teil D.
+      - from: null
+        artifact: FDO-Paket (ZIP)
+        format: "Modell-/Datendateien + Metadaten"
+        note: Eingabe von ausserhalb der Familie.
+
+  - id: fdo-squirrel-spec
+    kind: repo
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-squirrel-spec
+    role: >-
+      Dokumentation: rendert eine ReSpec-Seite aus Kopien von Schema,
+      RDF-Crosswalk und Klassifikationsregeln aus fdo-squirrel. Publiziert
+      selbst kein neues RDF.
+    status: "S1 gebaut (2026-09-03), docs/index.html rendert offline"
+    produces:
+      - artifact: docs/index.html
+        format: HTML (ReSpec)
+        note: GitHub Pages, keine RDF-Ausgabe
+    consumes:
+      - from: fdo-squirrel
+        artifact: >-
+          MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml,
+          classification_rules.yaml, package_source.py
+        format: YAML/Python
+        note: >-
+          Snapshot in data/raw/ per "python main.py fetch"; render laeuft
+          danach offline dagegen.
+
+  - id: fdo-squirrel-registry
+    kind: repo
+    org: Research-Squirrel-Engineers
+    url: https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry
+    role: >-
+      Erntet auf Zenodo publizierte FDOx-Pakete, buendelt ihre
+      RDF-Beschreibungen zu einem DCAT-Katalog, verankert an CIDOC CRM
+      (N4O-Anwendungsprofil crm-rdf-ap) und SHACL-validiert das Ergebnis,
+      liefert Facetten- und SPARQL-Seite ueber GitHub Pages.
+    status: "im Bau (Stand 2026-09-03)"
+    produces:
+      - artifact: dist/fdo-registry.ttl
+        format: RDF/Turtle
+        note: >-
+          DCAT-Katalog + CRM-Anker, versioniert, zitierbares Erzeugnis der
+          Registry selbst.
+      - artifact: dist/registry-index.json
+        format: JSON
+        note: Facettenindex fuer die Seite (Typ, Lizenz, Keyword, Ort, Jahr).
+    consumes:
+      - from: fdo-squirrel
+        artifact: fdo-metadata.ttl (von Zenodo geernteter Pakete)
+        format: RDF/Turtle
+        note: "Quellenliste: kuratiertes registry/sources.json mit DOIs."
+
+  - id: squirrelbase
+    kind: external-system
+    org: null
+    url: null
+    role: >-
+      Semantischer Meta-Hub (Wikibase) fuer 3D-Objekte, haelt die FDO-URL
+      je Objekt.
+    status: "produktiv, ausserhalb dieses Plans"
+    produces: []
+    consumes:
+      - from: fdo-squirrel-registry
+        artifact: FDO-URL/DOI je Objekt
+        format: Link
+        note: "Verknuepfung, kein TTL-Datenfluss."
