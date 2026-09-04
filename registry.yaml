@@ -33,8 +33,8 @@ repos:
 
   - id: fdo-squirrel
     kind: repo
-    org: Research-Squirrel-Engineers
-    url: https://github.com/Research-Squirrel-Engineers/fdo-squirrel
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-squirrel
     role: >-
       FDOx-Referenzimplementierung: liest ein FDO-Paket (ZIP), schreibt
       fdo-metadata.ttl.
@@ -82,20 +82,28 @@ repos:
 
   - id: fdo-squirrel-registry
     kind: repo
-    org: Research-Squirrel-Engineers
-    url: https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-squirrel-registry
     role: >-
       Erntet auf Zenodo publizierte FDOx-Pakete, buendelt ihre
       RDF-Beschreibungen zu einem DCAT-Katalog, verankert an CIDOC CRM
       (N4O-Anwendungsprofil crm-rdf-ap) und SHACL-validiert das Ergebnis,
       liefert Facetten- und SPARQL-Seite ueber GitHub Pages.
-    status: "im Bau (Stand 2026-09-03)"
+    status: >-
+      S0-S9 fertig (Stand 2026-09-04), inkl. eigenem FDO-Release (S8) und
+      N4O-Andockung (S9, siehe fdox-squirrel-n4o-collection). S10 laeuft:
+      Restarbeiten, u.a. der Zenodo-Publish des eigenen Release-Bundles.
     produces:
       - artifact: dist/fdo-registry.ttl
         format: RDF/Turtle
         note: >-
           DCAT-Katalog + CRM-Anker, versioniert, zitierbares Erzeugnis der
           Registry selbst.
+      - artifact: dist/fdo-registry-n4o.ttl
+        format: RDF/Turtle
+        note: >-
+          Bundle + CRM-Bruecke + Vokabulare in einem Graph, SHACL-gated
+          (S5) — das ist, was fdox-squirrel-n4o-collection uebernimmt.
       - artifact: dist/registry-index.json
         format: JSON
         note: Facettenindex fuer die Seite (Typ, Lizenz, Keyword, Ort, Jahr).
@@ -104,6 +112,59 @@ repos:
         artifact: fdo-metadata.ttl (von Zenodo geernteter Pakete)
         format: RDF/Turtle
         note: "Quellenliste: kuratiertes registry/sources.json mit DOIs."
+
+  - id: fdox-squirrel-n4o-collection
+    kind: repo
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdox-squirrel-n4o-collection
+    role: >-
+      Collection-Repo fuer den NFDI4Objects Knowledge Graph: haelt nur
+      metadata.yaml, laesst n4o-kg-profile daraus Registrierungssatz,
+      VoID-Statistik, CRM-Alignment und eine Browser-SPARQL-Seite bauen.
+    status: >-
+      Live seit 2026-09-04. Build und Pages-Deploy gruen, push-Trigger
+      aktiv. metadata.yaml/id und /homepage zeigen noch auf die GitHub-URL
+      der Registry statt einer echten DOI (haengt am Zenodo-Publish von
+      fdo-squirrel-registry S8, siehe dort S10).
+    produces:
+      - artifact: dist/n4o-collection.ttl, dist/metadata.ttl
+        format: RDF/Turtle, JSON-LD
+        note: >-
+          Registrierungssatz + volle DCAT/VoID/CRM-Aussage, veroeffentlicht
+          unter https://fdox-squirrel.github.io/fdox-squirrel-n4o-collection/
+    consumes:
+      - from: fdo-squirrel-registry
+        artifact: dist/fdo-registry-n4o.ttl
+        format: RDF/Turtle
+        note: >-
+          Per raw.githubusercontent.com bei jedem Build frisch gezogen,
+          nicht committet — Aenderungen an der Registry landen ohne
+          eigenes Zutun im naechsten Collection-Build.
+      - from: n4o-kg-profile
+        artifact: profile/, build/ (SHACL-Gate, Metadaten-/Seiten-Generatoren)
+        format: Python/Turtle/SHACL
+        note: >-
+          uses: n4o-rse/n4o-kg-profile/.github/workflows/collection.yml@v1,
+          kopiert bei jedem Lauf frisch rein.
+
+  - id: n4o-kg-profile
+    kind: external-system
+    org: n4o-rse
+    url: https://github.com/n4o-rse/n4o-kg-profile
+    role: >-
+      Projektuebergreifendes Werkzeug (nicht Teil der FDOx-Familie, gehoert
+      aber ebenfalls Flo): baut aus einer metadata.yaml Metadaten-RDF,
+      CIDOC-CRM-Alignment und eine Browser-SPARQL-Seite fuer eine
+      NFDI4Objects-KG-Collection.
+    status: >-
+      In Benutzung durch fdox-squirrel-n4o-collection, drei Bugs am
+      2026-09-04 direkt gepatcht und in echtem CI verifiziert (kein
+      v1-Tag; Checkout auf einen 404-Org-Pfad; Selbst-Checkout via
+      github.action_ref loeste auf den falschen Ref auf, behoben durch
+      github.action_path). "Draft" laut eigenem Status — Crosswalk/Shapes
+      noch nicht mit dem verbindlichen NCMDP/OCMDP abgeglichen.
+    produces: []
+    consumes: []
 
   - id: squirrelbase
     kind: external-system
@@ -119,3 +180,61 @@ repos:
         artifact: FDO-URL/DOI je Objekt
         format: Link
         note: "Verknuepfung, kein TTL-Datenfluss."
+
+  - id: fdo-3d-packager
+    kind: repo
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-3d-packager
+    role: >-
+      Sketchfab- oder lokales 3D-Modell -> fertiges fdo:3DDataFDO-Paket im
+      fdo-squirrel-Layout (Viewer inklusive).
+    status: >-
+      S0-S1 fertig (Skeleton, sieben Schritte als Initial Commit), S2-S7
+      (Implementierung) offen. Naechster Schritt laut Flo: erst committen,
+      dann in der Praxis testen und zurueckmelden, was bricht.
+    produces:
+      - artifact: fdo:3DDataFDO-Paket (ZIP)
+        format: RDF/Turtle + Binaerdaten
+        note: distributions[] bewusst nicht vorbefuellt
+    consumes:
+      - from: fdo-squirrel
+        artifact: MD.cff/CITATION.cff-Erzeugung, Bundling
+        format: Python
+        note: >-
+          Einbindungsmechanismus (pip aus GitHub vs. Submodule vs.
+          externer Pfad) noch offen — identische Frage wie bei
+          fdo-git-packager.
+      - from: null
+        artifact: Sketchfab-API oder lokale 3D-Datei
+        format: glTF/GLB u.a.
+        note: Eingabe von ausserhalb der Familie.
+
+  - id: fdo-git-packager
+    kind: repo
+    org: FDOx-squirrel
+    url: https://github.com/FDOx-squirrel/fdo-git-packager
+    role: >-
+      Git-Repo + fester Commit-SHA -> fertiges fdo:SoftwareFDO-Paket,
+      Working Tree flach auf ZIP-Root.
+    status: >-
+      S0-S1 fertig (Skeleton, sechs Schritte als Initial Commit), S2-S6
+      (Implementierung) offen. Naechster Schritt laut Flo: erst committen,
+      dann in der Praxis testen und zurueckmelden, was bricht.
+    produces:
+      - artifact: fdo:SoftwareFDO-Paket (ZIP)
+        format: RDF/Turtle + Quellcode
+        note: >-
+          Working Tree flach, sonst greifen fdo-squirrels
+          path_prefix-Klassifikationsregeln nicht.
+    consumes:
+      - from: fdo-squirrel
+        artifact: MD.cff/CITATION.cff-Erzeugung, Bundling
+        format: Python
+        note: >-
+          Gleiche Einbindungsfrage wie bei fdo-3d-packager; zusaetzlich
+          unbestaetigt, ob eine im Ziel-Repo vorhandene CITATION.cff
+          Vorrang vor einer synthetisierten haben soll.
+      - from: null
+        artifact: Git-Repo + Commit-SHA
+        format: Quellcode
+        note: Eingabe von ausserhalb der Familie.

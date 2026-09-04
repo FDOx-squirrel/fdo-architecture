@@ -138,6 +138,7 @@ A6 entfällt für dieses Repo — es publiziert kein eigenes RDF, nur eine
 |---|---|---|---|---|
 | S0 | Festlegungen: Repo-Name, Diagramm-Tool, `registry.yaml`-Schema | `fdo-architecture` | — | erledigt 2026-09-03 |
 | S1 | Skelett: `main.py`, `registry.yaml` (Erstbefüllung), `validate`- und `render`-Schritt | `fdo-architecture` | S0 | erledigt 2026-09-03 |
+| S2 | Weitere Familienmitglieder pflegen | `fdo-architecture` | S1 | laufend — kein Abnahmeschritt, siehe Teil C |
 
 S0 und S1 sind in diesem Chat zusammen entstanden, weil die Entscheidungen aus
 S0 unmittelbar in die `registry.yaml`-Struktur von S1 eingeflossen sind.
@@ -223,6 +224,35 @@ unversioniertes Verzeichnis mit `git init` + zwei vollständigen
 `main.py`-Läufen bestätigt: `git status` ist nach dem zweiten Lauf leer bis
 auf die einmalig neu angelegten Pfade aus dem ersten Lauf.
 
+### Nachtrag 2026-09-04, `registry.yaml` auf den aktuellen Familienstand gebracht
+
+Anlass war `FDOx-Squirrel-Plan.md`s eigener Hinweis, dass das öffentliche
+Familienbild sonst einen falschen Stand zeigt. Vier Änderungen: `org:` für
+`fdo-squirrel`/`fdo-squirrel-registry` von `Research-Squirrel-Engineers` auf
+`FDOx-squirrel` korrigiert (beide sind längst umgezogen, GitHub hält zwar
+einen Redirect, aber `registry.yaml` soll das nicht brauchen); `status:` der
+Registry von „im Bau" auf S0–S9 aktualisiert; `fdo-3d-packager` und
+`fdo-git-packager` als fehlende Einträge ergänzt; `n4o-kg-profile` (als
+`external-system`, Org `n4o-rse`) und das neue `fdox-squirrel-n4o-collection`
+aufgenommen, inklusive der Kante zwischen beiden. `python main.py --strict`
+danach: 9 Einträge, 0 Fehler, 0 Warnungen; `dist/architecture.mmd` und
+`docs/index.html` neu gebaut, nicht von Hand nachgezogen.
+
+## S2 — Weitere Familienmitglieder pflegen
+
+**Ziel:** Kein eigener Abnahmeschritt wie S0/S1, sondern die laufende
+Verpflichtung aus A2 („Registry synchron"): sobald ein Repo der Familie
+substanziell weiterkommt oder neu hinzukommt, wird `registry.yaml` — und
+damit `FDOx-Squirrel-Plan.md` — im selben Zug nachgezogen, nicht erst, wenn
+das Diagramm sichtbar falsch liegt.
+
+### Erledigt 2026-09-04
+
+Siehe Nachtrag unter S1: `registry.yaml` von sieben auf neun Einträge
+gebracht (die drei alten Fehler behoben, zwei Repos ergänzt, `n4o-kg-profile`
+neu als externes System), `FDOx-Squirrel-Plan.md` komplett neu geschrieben
+mit dem Stand aller acht Familienrepos plus `n4o-kg-profile`.
+
 ---
 
 # Teil D — Offene Punkte
@@ -233,11 +263,13 @@ auf die einmalig neu angelegten Pfade aus dem ersten Lauf.
   oder geklont werden kann, gehört das als eigener kurzer Schritt hierher:
   `produces`/`consumes` in `registry.yaml` korrigieren, die Kante im
   Diagramm von gestrichelt auf durchgezogen setzen.
-- **Migration der `Research-Squirrel-Engineers`-Repos.** `fdo-squirrel` und
-  `fdo-squirrel-registry` stehen aktuell mit ihrer echten (Ist-)Org in
-  `registry.yaml`. Falls sie nach `FDOx-squirrel` umziehen, muss `org:` und
-  `url:` in `registry.yaml` von Hand nachgezogen werden — kein
-  automatischer Sync mit GitHub.
+- ~~**Migration der `Research-Squirrel-Engineers`-Repos.**~~ Erledigt
+  2026-09-04: `fdo-squirrel` und `fdo-squirrel-registry` sind längst nach
+  `FDOx-squirrel` umgezogen, `org:`/`url:` in `registry.yaml` sind
+  nachgezogen. Bei diesem Durchgang gleich mit erledigt: `status:` der
+  Registry auf S0–S9 aktualisiert, `fdo-3d-packager`/`fdo-git-packager` als
+  Einträge ergänzt, `n4o-kg-profile` (extern) und `fdox-squirrel-n4o-collection`
+  neu aufgenommen. `python main.py --strict`: 9 Einträge, 0 Fehler.
 - **`wdt-*`-Familie bewusst aussen vor** (Scope-Entscheidung 2026-09-03).
   Falls das später gewünscht ist: eigenes `registry.yaml` für die
   `wdt-*`-Familie, oder ein `family:`-Feld zum Filtern in einer gemeinsamen

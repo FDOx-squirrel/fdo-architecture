@@ -3,22 +3,38 @@ flowchart LR
     classDef external fill:#fef3c7,stroke:#b45309,color:#451a03;
 
     fdo_squirrel_md_generator["fdo-squirrel-md-generator (FDOx-squirrel)"]
-    fdo_squirrel["fdo-squirrel (Research-Squirrel-Engineers)"]
+    fdo_squirrel["fdo-squirrel (FDOx-squirrel)"]
     fdo_squirrel_spec["fdo-squirrel-spec (FDOx-squirrel)"]
-    fdo_squirrel_registry["fdo-squirrel-registry (Research-Squirrel-Engineers)"]
+    fdo_squirrel_registry["fdo-squirrel-registry (FDOx-squirrel)"]
+    fdox_squirrel_n4o_collection["fdox-squirrel-n4o-collection (FDOx-squirrel)"]
+    n4o_kg_profile{{"n4o-kg-profile (n4o-rse)"}}
     squirrelbase{{"squirrelbase (external system)"}}
+    fdo_3d_packager["fdo-3d-packager (FDOx-squirrel)"]
+    fdo_git_packager["fdo-git-packager (FDOx-squirrel)"]
 
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
     fdo_squirrel -- "fdo-metadata.ttl (von Zenodo geerntet..." --> fdo_squirrel_registry
+    fdo_squirrel_registry -- "dist/fdo-registry-n4o.ttl" --> fdox_squirrel_n4o_collection
+    n4o_kg_profile -- "profile/" --> fdox_squirrel_n4o_collection
     fdo_squirrel_registry -- "FDO-URL/DOI je Objekt" --> squirrelbase
+    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_3d_packager
+    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_git_packager
 
     class fdo_squirrel_md_generator repo;
     click fdo_squirrel_md_generator "https://github.com/FDOx-squirrel/fdo-squirrel-md-generator" "_blank"
     class fdo_squirrel repo;
-    click fdo_squirrel "https://github.com/Research-Squirrel-Engineers/fdo-squirrel" "_blank"
+    click fdo_squirrel "https://github.com/FDOx-squirrel/fdo-squirrel" "_blank"
     class fdo_squirrel_spec repo;
     click fdo_squirrel_spec "https://github.com/FDOx-squirrel/fdo-squirrel-spec" "_blank"
     class fdo_squirrel_registry repo;
-    click fdo_squirrel_registry "https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry" "_blank"
+    click fdo_squirrel_registry "https://github.com/FDOx-squirrel/fdo-squirrel-registry" "_blank"
+    class fdox_squirrel_n4o_collection repo;
+    click fdox_squirrel_n4o_collection "https://github.com/FDOx-squirrel/fdox-squirrel-n4o-collection" "_blank"
+    class n4o_kg_profile external;
+    click n4o_kg_profile "https://github.com/n4o-rse/n4o-kg-profile" "_blank"
     class squirrelbase external;
+    class fdo_3d_packager repo;
+    click fdo_3d_packager "https://github.com/FDOx-squirrel/fdo-3d-packager" "_blank"
+    class fdo_git_packager repo;
+    click fdo_git_packager "https://github.com/FDOx-squirrel/fdo-git-packager" "_blank"

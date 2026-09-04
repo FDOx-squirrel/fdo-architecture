@@ -25,25 +25,41 @@ flowchart LR
     classDef external fill:#fef3c7,stroke:#b45309,color:#451a03;
 
     fdo_squirrel_md_generator["fdo-squirrel-md-generator (FDOx-squirrel)"]
-    fdo_squirrel["fdo-squirrel (Research-Squirrel-Engineers)"]
+    fdo_squirrel["fdo-squirrel (FDOx-squirrel)"]
     fdo_squirrel_spec["fdo-squirrel-spec (FDOx-squirrel)"]
-    fdo_squirrel_registry["fdo-squirrel-registry (Research-Squirrel-Engineers)"]
+    fdo_squirrel_registry["fdo-squirrel-registry (FDOx-squirrel)"]
+    fdox_squirrel_n4o_collection["fdox-squirrel-n4o-collection (FDOx-squirrel)"]
+    n4o_kg_profile{{"n4o-kg-profile (n4o-rse)"}}
     squirrelbase{{"squirrelbase (external system)"}}
+    fdo_3d_packager["fdo-3d-packager (FDOx-squirrel)"]
+    fdo_git_packager["fdo-git-packager (FDOx-squirrel)"]
 
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
     fdo_squirrel -- "fdo-metadata.ttl (von Zenodo geerntet..." --> fdo_squirrel_registry
+    fdo_squirrel_registry -- "dist/fdo-registry-n4o.ttl" --> fdox_squirrel_n4o_collection
+    n4o_kg_profile -- "profile/" --> fdox_squirrel_n4o_collection
     fdo_squirrel_registry -- "FDO-URL/DOI je Objekt" --> squirrelbase
+    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_3d_packager
+    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_git_packager
 
     class fdo_squirrel_md_generator repo;
     click fdo_squirrel_md_generator "https://github.com/FDOx-squirrel/fdo-squirrel-md-generator" "_blank"
     class fdo_squirrel repo;
-    click fdo_squirrel "https://github.com/Research-Squirrel-Engineers/fdo-squirrel" "_blank"
+    click fdo_squirrel "https://github.com/FDOx-squirrel/fdo-squirrel" "_blank"
     class fdo_squirrel_spec repo;
     click fdo_squirrel_spec "https://github.com/FDOx-squirrel/fdo-squirrel-spec" "_blank"
     class fdo_squirrel_registry repo;
-    click fdo_squirrel_registry "https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry" "_blank"
+    click fdo_squirrel_registry "https://github.com/FDOx-squirrel/fdo-squirrel-registry" "_blank"
+    class fdox_squirrel_n4o_collection repo;
+    click fdox_squirrel_n4o_collection "https://github.com/FDOx-squirrel/fdox-squirrel-n4o-collection" "_blank"
+    class n4o_kg_profile external;
+    click n4o_kg_profile "https://github.com/n4o-rse/n4o-kg-profile" "_blank"
     class squirrelbase external;
+    class fdo_3d_packager repo;
+    click fdo_3d_packager "https://github.com/FDOx-squirrel/fdo-3d-packager" "_blank"
+    class fdo_git_packager repo;
+    click fdo_git_packager "https://github.com/FDOx-squirrel/fdo-git-packager" "_blank"
 </pre>
 
 <table>
@@ -58,8 +74,8 @@ flowchart LR
           <td>MD.cff, CITATION.cff (YAML)</td>
           <td>—</td>
         </tr>
-        <tr><td><a href="https://github.com/Research-Squirrel-Engineers/fdo-squirrel">fdo-squirrel</a></td>
-          <td>Research-Squirrel-Engineers</td>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel">fdo-squirrel</a></td>
+          <td>FDOx-squirrel</td>
           <td>FDOx-Referenzimplementierung: liest ein FDO-Paket (ZIP), schreibt fdo-metadata.ttl.</td>
           <td>v0.1, publiziert (Zenodo DOI 10.5281/zenodo.18441772)</td>
           <td>fdo-metadata.ttl (RDF/Turtle); rdf_modelling_report.json / .html (JSON/HTML)</td>
@@ -72,12 +88,26 @@ flowchart LR
           <td>docs/index.html (HTML (ReSpec))</td>
           <td>aus fdo-squirrel: MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml, classification_rules.yaml, package_source.py (YAML/Python)</td>
         </tr>
-        <tr><td><a href="https://github.com/Research-Squirrel-Engineers/fdo-squirrel-registry">fdo-squirrel-registry</a></td>
-          <td>Research-Squirrel-Engineers</td>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel-registry">fdo-squirrel-registry</a></td>
+          <td>FDOx-squirrel</td>
           <td>Erntet auf Zenodo publizierte FDOx-Pakete, buendelt ihre RDF-Beschreibungen zu einem DCAT-Katalog, verankert an CIDOC CRM (N4O-Anwendungsprofil crm-rdf-ap) und SHACL-validiert das Ergebnis, liefert Facetten- und SPARQL-Seite ueber GitHub Pages.</td>
-          <td>im Bau (Stand 2026-09-03)</td>
-          <td>dist/fdo-registry.ttl (RDF/Turtle); dist/registry-index.json (JSON)</td>
+          <td>S0-S9 fertig (Stand 2026-09-04), inkl. eigenem FDO-Release (S8) und N4O-Andockung (S9, siehe fdox-squirrel-n4o-collection). S10 laeuft: Restarbeiten, u.a. der Zenodo-Publish des eigenen Release-Bundles.</td>
+          <td>dist/fdo-registry.ttl (RDF/Turtle); dist/fdo-registry-n4o.ttl (RDF/Turtle); dist/registry-index.json (JSON)</td>
           <td>aus fdo-squirrel: fdo-metadata.ttl (von Zenodo geernteter Pakete) (RDF/Turtle)</td>
+        </tr>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdox-squirrel-n4o-collection">fdox-squirrel-n4o-collection</a></td>
+          <td>FDOx-squirrel</td>
+          <td>Collection-Repo fuer den NFDI4Objects Knowledge Graph: haelt nur metadata.yaml, laesst n4o-kg-profile daraus Registrierungssatz, VoID-Statistik, CRM-Alignment und eine Browser-SPARQL-Seite bauen.</td>
+          <td>Live seit 2026-09-04. Build und Pages-Deploy gruen, push-Trigger aktiv. metadata.yaml/id und /homepage zeigen noch auf die GitHub-URL der Registry statt einer echten DOI (haengt am Zenodo-Publish von fdo-squirrel-registry S8, siehe dort S10).</td>
+          <td>dist/n4o-collection.ttl, dist/metadata.ttl (RDF/Turtle, JSON-LD)</td>
+          <td>aus fdo-squirrel-registry: dist/fdo-registry-n4o.ttl (RDF/Turtle); aus n4o-kg-profile: profile/, build/ (SHACL-Gate, Metadaten-/Seiten-Generatoren) (Python/Turtle/SHACL)</td>
+        </tr>
+        <tr><td><a href="https://github.com/n4o-rse/n4o-kg-profile">n4o-kg-profile</a></td>
+          <td>n4o-rse</td>
+          <td>Projektuebergreifendes Werkzeug (nicht Teil der FDOx-Familie, gehoert aber ebenfalls Flo): baut aus einer metadata.yaml Metadaten-RDF, CIDOC-CRM-Alignment und eine Browser-SPARQL-Seite fuer eine NFDI4Objects-KG-Collection.</td>
+          <td>In Benutzung durch fdox-squirrel-n4o-collection, drei Bugs am 2026-09-04 direkt gepatcht und in echtem CI verifiziert (kein v1-Tag; Checkout auf einen 404-Org-Pfad; Selbst-Checkout via github.action_ref loeste auf den falschen Ref auf, behoben durch github.action_path). &quot;Draft&quot; laut eigenem Status — Crosswalk/Shapes noch nicht mit dem verbindlichen NCMDP/OCMDP abgeglichen.</td>
+          <td>—</td>
+          <td>—</td>
         </tr>
         <tr><td>squirrelbase</td>
           <td>—</td>
@@ -85,6 +115,20 @@ flowchart LR
           <td>produktiv, ausserhalb dieses Plans</td>
           <td>—</td>
           <td>aus fdo-squirrel-registry: FDO-URL/DOI je Objekt (Link)</td>
+        </tr>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-3d-packager">fdo-3d-packager</a></td>
+          <td>FDOx-squirrel</td>
+          <td>Sketchfab- oder lokales 3D-Modell -&gt; fertiges fdo:3DDataFDO-Paket im fdo-squirrel-Layout (Viewer inklusive).</td>
+          <td>S0-S1 fertig (Skeleton, sieben Schritte als Initial Commit), S2-S7 (Implementierung) offen. Naechster Schritt laut Flo: erst committen, dann in der Praxis testen und zurueckmelden, was bricht.</td>
+          <td>fdo:3DDataFDO-Paket (ZIP) (RDF/Turtle + Binaerdaten)</td>
+          <td>aus fdo-squirrel: MD.cff/CITATION.cff-Erzeugung, Bundling (Python); extern: Sketchfab-API oder lokale 3D-Datei (glTF/GLB u.a.)</td>
+        </tr>
+        <tr><td><a href="https://github.com/FDOx-squirrel/fdo-git-packager">fdo-git-packager</a></td>
+          <td>FDOx-squirrel</td>
+          <td>Git-Repo + fester Commit-SHA -&gt; fertiges fdo:SoftwareFDO-Paket, Working Tree flach auf ZIP-Root.</td>
+          <td>S0-S1 fertig (Skeleton, sechs Schritte als Initial Commit), S2-S6 (Implementierung) offen. Naechster Schritt laut Flo: erst committen, dann in der Praxis testen und zurueckmelden, was bricht.</td>
+          <td>fdo:SoftwareFDO-Paket (ZIP) (RDF/Turtle + Quellcode)</td>
+          <td>aus fdo-squirrel: MD.cff/CITATION.cff-Erzeugung, Bundling (Python); extern: Git-Repo + Commit-SHA (Quellcode)</td>
         </tr>
   </tbody>
 </table>
