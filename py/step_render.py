@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import architecture_utils as au  # noqa: E402
 
-UNVERIFIED_MARKERS = ("nicht verifiziert", "vermutete", "unverifiziert")
+UNVERIFIED_MARKERS = ("not verified", "assumed", "unverified")
 
 
 def _mermaid_id(repo_id: str) -> str:
@@ -83,11 +83,27 @@ def _artifact_list(entries: list[dict], key_from: bool = False) -> str:
         fmt = e.get("format")
         piece = f"{artifact} ({fmt})" if fmt else artifact
         if key_from and e.get("from"):
-            piece = f"aus {e['from']}: {piece}"
+            piece = f"from {e['from']}: {piece}"
         elif key_from:
-            piece = f"extern: {piece}"
+            piece = f"external: {piece}"
         parts.append(piece)
     return "; ".join(parts)
+
+
+STATUS_LABELS = {"done": "done", "in-progress": "in progress", "error": "error"}
+STATUS_CSS_CLASS = {"done": "status-done", "in-progress": "status-progress", "error": "status-error"}
+
+
+def _status_badge(level: str | None) -> str:
+    """A small coloured pill: done (green), in-progress (amber), error (red).
+
+    Falls back to a neutral grey badge labelled with the raw value if
+    registry.yaml carries something step_validate.py did not catch — the
+    page should never go blank over an unknown status_level.
+    """
+    css_class = STATUS_CSS_CLASS.get(level, "status-unknown")
+    label = STATUS_LABELS.get(level, level or "unknown")
+    return f'<span class="badge {css_class}">{html.escape(label)}</span>'
 
 
 def build_html(repos: list[dict], mermaid_source: str) -> str:
@@ -101,7 +117,10 @@ def build_html(repos: list[dict], mermaid_source: str) -> str:
         )
         rows.append(f'          <td>{html.escape(repo.get("org") or "—")}</td>')
         rows.append(f'          <td>{html.escape(repo.get("role", ""))}</td>')
-        rows.append(f'          <td>{html.escape(repo.get("status", ""))}</td>')
+        rows.append(
+            f'          <td>{_status_badge(repo.get("status_level"))}<br>'
+            f'<span class="status-note">{html.escape(repo.get("status", ""))}</span></td>'
+        )
         rows.append(f'          <td>{html.escape(_artifact_list(repo.get("produces") or []))}</td>')
         rows.append(
             f'          <td>{html.escape(_artifact_list(repo.get("consumes") or [], key_from=True))}</td>'
@@ -111,10 +130,10 @@ def build_html(repos: list[dict], mermaid_source: str) -> str:
     release = au.RELEASE
 
     return f"""<!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>FDOx — Architektur</title>
+<title>FDOx — Architecture</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body {{ font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; color: #1e1b4b; }}
@@ -124,20 +143,34 @@ def build_html(repos: list[dict], mermaid_source: str) -> str:
   th, td {{ border: 1px solid #ddd; padding: 0.5rem; text-align: left; vertical-align: top; }}
   th {{ background: #eef2ff; }}
   .mermaid {{ margin: 2rem 0; }}
+  .badge {{ display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }}
+  .status-done {{ background: #dcfce7; color: #166534; }}
+  .status-progress {{ background: #fef3c7; color: #92400e; }}
+  .status-error {{ background: #fee2e2; color: #991b1b; }}
+  .status-unknown {{ background: #e5e7eb; color: #374151; }}
+  .status-note {{ color: #555; font-size: 0.85rem; }}
+  .legend {{ margin: 0.5rem 0 1.5rem; font-size: 0.85rem; color: #555; }}
+  .legend .badge {{ margin-right: 0.3rem; }}
   footer {{ margin-top: 2rem; color: #777; font-size: 0.85rem; }}
 </style>
 </head>
 <body>
-<h1>FDOx — Architektur</h1>
-<p class="meta">Erzeugt aus <code>registry.yaml</code> per <code>py/step_render.py</code>. Stand: {release}.</p>
+<h1>FDOx — Architecture</h1>
+<p class="meta">Generated from <code>registry.yaml</code> by <code>py/step_render.py</code>. As of {release}.</p>
 
 <pre class="mermaid">
 {mermaid_source}
 </pre>
 
+<p class="legend">
+  <span class="badge status-done">done</span> currently works, nothing blocking —
+  <span class="badge status-progress">in progress</span> actively being built —
+  <span class="badge status-error">error</span> broken or blocked
+</p>
+
 <table>
   <thead>
-    <tr><th>Repo</th><th>Org</th><th>Rolle</th><th>Status</th><th>Produces</th><th>Consumes</th></tr>
+    <tr><th>Repo</th><th>Org</th><th>Role</th><th>Status</th><th>Produces</th><th>Consumes</th></tr>
   </thead>
   <tbody>
 {table_rows}

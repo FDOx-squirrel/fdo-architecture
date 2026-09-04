@@ -12,8 +12,9 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import architecture_utils as au  # noqa: E402
 
-REQUIRED_FIELDS = ("id", "kind", "role", "status")
+REQUIRED_FIELDS = ("id", "kind", "role", "status", "status_level")
 VALID_KINDS = ("repo", "external-system")
+VALID_STATUS_LEVELS = ("done", "in-progress", "error")
 
 
 def run(strict: bool = False) -> int:
@@ -40,6 +41,11 @@ def run(strict: bool = False) -> int:
                 errors.append(f"{repo_id}: missing required field '{field}'")
         if repo.get("kind") not in VALID_KINDS:
             errors.append(f"{repo_id}: kind must be one of {VALID_KINDS}, got {repo.get('kind')!r}")
+        if repo.get("status_level") not in VALID_STATUS_LEVELS:
+            errors.append(
+                f"{repo_id}: status_level must be one of {VALID_STATUS_LEVELS}, "
+                f"got {repo.get('status_level')!r}"
+            )
         if repo.get("kind") == "repo" and not repo.get("url"):
             warnings.append(f"{repo_id}: kind is 'repo' but 'url' is not set")
 

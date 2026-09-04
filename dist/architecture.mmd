@@ -14,12 +14,12 @@ flowchart LR
 
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
-    fdo_squirrel -- "fdo-metadata.ttl (von Zenodo geerntet..." --> fdo_squirrel_registry
+    fdo_squirrel -- "fdo-metadata.ttl (of packages harvest..." --> fdo_squirrel_registry
     fdo_squirrel_registry -- "dist/fdo-registry-n4o.ttl" --> fdox_squirrel_n4o_collection
     n4o_kg_profile -- "profile/" --> fdox_squirrel_n4o_collection
-    fdo_squirrel_registry -- "FDO-URL/DOI je Objekt" --> squirrelbase
-    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_3d_packager
-    fdo_squirrel -- "MD.cff/CITATION.cff-Erzeugung" --> fdo_git_packager
+    fdo_squirrel_registry -- "FDO URL/DOI per object" --> squirrelbase
+    fdo_squirrel -- "MD.cff/CITATION.cff generation" --> fdo_3d_packager
+    fdo_squirrel -- "MD.cff/CITATION.cff generation" --> fdo_git_packager
 
     class fdo_squirrel_md_generator repo;
     click fdo_squirrel_md_generator "https://github.com/FDOx-squirrel/fdo-squirrel-md-generator" "_blank"

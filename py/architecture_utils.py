@@ -14,7 +14,7 @@ import yaml
 
 # The only place a date may appear in generated output. Bump by hand when
 # registry.yaml changes in a way worth dating; never call datetime.now().
-RELEASE = "2026-09-03"
+RELEASE = "2026-09-04"
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 REGISTRY_YAML = ROOT / "registry.yaml"

@@ -114,6 +114,8 @@ Eigenschaften, die das fertige Ding hat:
 | `registry.yaml`-Schema | Liste unter `repos:` mit `id`/`kind`/`org`/`url`/`role`/`status`/`produces[]`/`consumes[]`; `consumes[].from` verweist auf eine andere `id` oder ist `null` für externe Eingaben | Vorschlag |
 | Datenquelle | von Hand gepflegtes `registry.yaml`, kein Harvesting, kein Fetch-Schritt | Vorschlag |
 | Unsichere Kanten | Einträge mit „nicht verifiziert"/„vermutet" in der Notiz werden im Diagramm gestrichelt gezeichnet, nicht stillschweigend als gesichert dargestellt | Vorschlag |
+| Statusanzeige nach aussen | `status_level` (`done`/`in-progress`/`error`) als eigenes Pflichtfeld neben `status`; die Seite zeigt eine farbige Badge (grün/gelb/rot) plus einen kurzen Ein-Satz-Status, nicht mehr den vollen Fließtext. Lange Historie (Befund-Nummern, Patch-Verläufe) gehört ins jeweilige `PRIMER.md`/`FDOx-Squirrel-Plan.md`, nicht auf die öffentliche Seite | 2026-09-04 |
+| Sprache von `registry.yaml`/Seite | A3s Regel („alles ausser `PRIMER.md` ist Englisch") war nie umgesetzt — `registry.yaml`s `role`/`status`-Werte und `docs/index.html` waren deutsch. Am 2026-09-04 nachgezogen, keine neue Regel, nur die bestehende endlich angewendet | 2026-09-04 |
 
 ## A5 Was in welchem Chat hochgeladen wird
 
@@ -139,6 +141,7 @@ A6 entfällt für dieses Repo — es publiziert kein eigenes RDF, nur eine
 | S0 | Festlegungen: Repo-Name, Diagramm-Tool, `registry.yaml`-Schema | `fdo-architecture` | — | erledigt 2026-09-03 |
 | S1 | Skelett: `main.py`, `registry.yaml` (Erstbefüllung), `validate`- und `render`-Schritt | `fdo-architecture` | S0 | erledigt 2026-09-03 |
 | S2 | Weitere Familienmitglieder pflegen | `fdo-architecture` | S1 | laufend — kein Abnahmeschritt, siehe Teil C |
+| S3 | Englisch + Status-Ampel | `fdo-architecture` | S1 | erledigt 2026-09-04 |
 
 S0 und S1 sind in diesem Chat zusammen entstanden, weil die Entscheidungen aus
 S0 unmittelbar in die `registry.yaml`-Struktur von S1 eingeflossen sind.
@@ -252,6 +255,49 @@ Siehe Nachtrag unter S1: `registry.yaml` von sieben auf neun Einträge
 gebracht (die drei alten Fehler behoben, zwei Repos ergänzt, `n4o-kg-profile`
 neu als externes System), `FDOx-Squirrel-Plan.md` komplett neu geschrieben
 mit dem Stand aller acht Familienrepos plus `n4o-kg-profile`.
+
+## S3 — Englisch + Status-Ampel
+
+**Ziel:** die Seite und `registry.yaml`s `role`/`status`-Werte tatsächlich
+englisch, wie A3 es seit S0 verlangt, aber nie umgesetzt war. Dazu eine grob
+granulare Statusanzeige (`status_level`: `done`/`in-progress`/`error`) statt
+Fließtext, damit ein Aussenstehender die Seite auf einen Blick liest, ohne
+Patch-Historie mitlesen zu müssen.
+
+**Uploads:** keine, Änderung an bestehendem Repo.
+
+**Was gemacht wurde:**
+
+- `registry.yaml`: alle `role`/`status`-Werte ins Englische übersetzt, `note`-Felder ebenso (inkl. `UNVERIFIED_MARKERS` in `step_render.py`, die
+  auf den `note`-Text matchen — sonst hätte die gestrichelte Kante lautlos
+  aufgehört zu funktionieren). Neues Pflichtfeld `status_level` je Eintrag.
+- `py/step_validate.py`: `status_level` zu `REQUIRED_FIELDS`, geprüft gegen
+  `VALID_STATUS_LEVELS = ("done", "in-progress", "error")`.
+- `py/step_render.py`: `_status_badge()` rendert eine farbige Pille
+  (grün/gelb/rot) aus `status_level`, mit einem Fallback auf ein neutrales
+  Grau plus dem Rohwert, falls doch mal ein unbekannter Wert durchrutscht —
+  die Seite soll nie leer bleiben, nur weil ein Feld fehlt. Der bisherige
+  Fließtext steht klein darunter (`status`, jetzt bewusst kurz gehalten,
+  Detail gehört ins jeweilige `PRIMER.md`). Seite komplett auf Englisch
+  (`<html lang="en">`, Titel, Spaltenköpfe, Legende).
+- `py/architecture_utils.py`: `RELEASE` von `2026-09-03` auf `2026-09-04`
+  nachgezogen — war beim `registry.yaml`-Update aus S2 übersehen worden
+  (A3, „Kein `datetime.now()`" — dafür muss die Konstante aber auch
+  tatsächlich mitgezogen werden, das ist an mir vorbeigelaufen).
+
+**Abnahme:** `python main.py --strict` läuft fehlerfrei; zwei Läufe von
+`--only render` hintereinander erzeugen byte-identische `docs/index.html`;
+kein `status_level` fehlt oder liegt ausserhalb der drei erlaubten Werte.
+
+### Erledigt 2026-09-04
+
+Geprüft: `9 entries, 0 errors, 0 warnings`, Reproduzierbarkeit bestätigt
+(`diff` zwischen zwei Läufen leer). Aktuell nutzt kein Eintrag
+`status_level: error` — passt zum echten Stand, niemand in der Familie ist
+gerade blockiert, nur unterschiedlich weit. **Nicht geprüft:** wie die Badges
+tatsächlich in einem Browser aussehen — das ist erst bewiesen, wenn jemand
+`docs/index.html` öffnet (dieselbe Lehre wie in `fdo-squirrel-registry`,
+Befund 28: eine Seite ist erst geprüft, wenn ein Browser sie gezeichnet hat).
 
 ---
 
