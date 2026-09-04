@@ -1,6 +1,6 @@
 # FDOx-Squirrel-Plan — Stand & offene To-Dos
 
-Stand: 04.09.2026. Aktualisiert nach Abschluss von `fdo-squirrel-registry`s S8/S9 (Registry als eigenes FDO, N4O-Andockung) und dem Hinzukommen eines neuen Repos, `fdox-squirrel-n4o-collection`. `registry.yaml` in diesem Repo ist mit diesem Stand synchron (`python main.py --strict` läuft fehlerfrei, `dist/architecture.mmd`/`docs/index.html` neu gebaut). Dieses Dokument liegt selbst in [`fdo-architecture/FDOx-Squirrel-Plan.md`](https://github.com/FDOx-squirrel/fdo-architecture/blob/main/FDOx-Squirrel-Plan.md) und soll bei jeder größeren Änderung an einem Familienmitglied nachgezogen werden.
+Stand: 04.09.2026. Aktualisiert nach Abschluss von `fdo-squirrel-registry`s S8/S9 (Registry als eigenes FDO, N4O-Andockung), dem Hinzukommen eines neuen Repos, `fdox-squirrel-n4o-collection`, und `fdo-squirrel-spec`s S2/S3 (echte Beispielinstanzen, Tag-Pin). `registry.yaml` in diesem Repo ist mit diesem Stand synchron (`python main.py --strict` läuft fehlerfrei, `dist/architecture.mmd`/`docs/index.html` neu gebaut). Dieses Dokument liegt selbst in [`fdo-architecture/FDOx-Squirrel-Plan.md`](https://github.com/FDOx-squirrel/fdo-architecture/blob/main/FDOx-Squirrel-Plan.md) und soll bei jeder größeren Änderung an einem Familienmitglied nachgezogen werden.
 
 ## Familie im Überblick
 
@@ -12,7 +12,7 @@ Acht Repos unter `FDOx-squirrel` (sieben plus ein neu hinzugekommenes), dazu ein
 | [`fdo-squirrel-registry`](https://github.com/FDOx-squirrel/fdo-squirrel-registry) | Erntet von Zenodo, DCAT-Bundle + CRM-Bridge, SHACL-Gate, N4O-Export, Facetten- + SPARQL-Seite | **S0–S9 fertig.** S10 (Restarbeiten) läuft — kein Abnahmeschritt, sondern eine Aufgabenliste. |
 | [`fdox-squirrel-n4o-collection`](https://github.com/FDOx-squirrel/fdox-squirrel-n4o-collection) | **Neu.** Collection-Repo für den NFDI4Objects Knowledge Graph: eine `metadata.yaml`, der Rest kommt von `n4o-kg-profile` | Live seit 2026-09-04, Build + Pages-Deploy grün. Kein `PRIMER.md`/`main.py` — folgt bewusst nicht dem Familienmuster, siehe unten. |
 | [`fdo-squirrel-md-generator`](https://github.com/FDOx-squirrel/fdo-squirrel-md-generator) | Web-Generator für `MD.cff`+`CITATION.cff` | Nur `PRIMER.md` im Repo. **S0 (Entscheidungen) fertig, S1–S7 (aller Code) offen.** Unverändert seit letztem Stand. |
-| [`fdo-squirrel-spec`](https://github.com/FDOx-squirrel/fdo-squirrel-spec) | ReSpec-HTML-Doku des Metadatenformats | **S1 fertig** (`docs/index.html` rendert offline). S2 (echtes Beispiel statt kaputtem Demo-TTL), S3 (`fetch` auf Tag statt `main` pinnen) offen. Unverändert. |
+| [`fdo-squirrel-spec`](https://github.com/FDOx-squirrel/fdo-squirrel-spec) | ReSpec-HTML-Doku des Metadatenformats | **S1–S3 fertig.** Zwei echte Beispielinstanzen aus `fdo-squirrel-registry` statt kaputtem Demo-TTL, `fetch` für `fdo-squirrel` auf Tag `v0.3.1` gepinnt. Live: <https://fdox-squirrel.github.io/fdo-squirrel-spec/>. |
 | [`fdo-architecture`](https://github.com/FDOx-squirrel/fdo-architecture) | Meta-Repo: `registry.yaml` + Mermaid-Übersicht + dieser Plan | **S0–S1 fertig.** `registry.yaml` mit diesem Patch aktualisiert (siehe unten) — die drei zuvor offenen Punkte sind erledigt. |
 | [`fdo-3d-packager`](https://github.com/FDOx-squirrel/fdo-3d-packager) | Sketchfab/lokales 3D-Modell → `fdo:3DDataFDO`-Paket | **S0–S1 fertig** (Skeleton, 7 Schritte, als Initial-Commit-ZIP geliefert). Committen und in der Praxis testen steht noch aus. S2–S7 offen. |
 | [`fdo-git-packager`](https://github.com/FDOx-squirrel/fdo-git-packager) | Git-Repo (fester Commit) → `fdo:SoftwareFDO`-Paket | **S0–S1 fertig** (Skeleton, 6 Schritte, als Initial-Commit-ZIP geliefert). Committen und in der Praxis testen steht noch aus. S2–S6 offen. |
@@ -46,10 +46,25 @@ Kein `PRIMER.md`, daher aus der Commit-Historie abgelesen. Unverändert seit dem
 - Zieht `dist/fdo-registry-n4o.ttl` bei jedem Build frisch von `raw.githubusercontent.com` — sobald die Registry sich selbst katalogisiert (S10), landet das ohne Änderung an diesem Repo automatisch im nächsten Build.
 
 ### `fdo-squirrel-spec`
-Unverändert seit letztem Stand — keine neue Aktivität geprüft.
-- ✅ S1 fertig (gepusht, `docs/index.html` rendert offline).
-- **To-Do S2:** echtes, valides `fdo-metadata.ttl` als Vorzeigebeispiel statt des kaputten Demo-TTL.
-- **To-Do S3:** `fetch` von `main`-Branch auf einen festen Tag umstellen, sobald `fdo-squirrel` Releases taggt.
+- ✅ S1–S3 fertig (2026-09-04).
+- Zwei echte, geharvestete Beispielinstanzen aus `fdo-squirrel-registry`
+  (eine `SoftwareFDO`, eine `3DDataFDO`) ersetzen das gemischte, kaputte
+  Demo-TTL aus `fdo-squirrel` selbst. Eine der beiden ist als harvestet
+  ungültiges Turtle (fehlende `crm:`/`crmdig:`-Prefixe) — Reparaturlayer
+  (`py/example_repair.py`) dafür aus `fdo-squirrel-registry/py/repair.py`
+  kopiert, repariert nur im Speicher, nie auf der Platte.
+- `fetch` für `fdo-squirrel` jetzt auf Tag `v0.3.1` gepinnt statt `main`
+  (`fdo-squirrel` taggt inzwischen Releases).
+- **Neuer Fund dabei:** `main` bei `fdo-squirrel` läuft `v0.3.1` bereits
+  voraus (Crosswalk-`identifiers`-Handler, `geosparql:hasBoundingBox` statt
+  `dcat:bbox`) — bewusst noch nicht übernommen, nächster Tag-Bump holt das
+  nach. Außerdem ein Namespace-Mismatch: `crosswalk_md_cff_to_rdf.yaml`
+  deklariert `fdo: https://w3id.org/fdo#`, real erzeugte Instanzen nutzen
+  `https://w3id.org/fdo-squirrel/` — siehe `fdo-squirrel-spec`s `PRIMER.md`,
+  noch nicht bei `fdo-squirrel` gemeldet.
+- Live: <https://fdox-squirrel.github.io/fdo-squirrel-spec/>.
+- **To-Do S4:** `owl-time`-artige Diagramme zur Package-Struktur (aus dem
+  ursprünglichen S2 ausgelagert).
 
 ### `fdo-squirrel-md-generator`
 Unverändert seit letztem Stand.
@@ -85,4 +100,4 @@ Unverändert seit letztem Stand.
 
 ---
 
-*Hinweis: Dieser Stand basiert auf `fdo-squirrel-registry`s und `fdox-squirrel-n4o-collection`s live stehenden `PRIMER.md`/Repo-Inhalten am 04.09.2026, plus einem frischen Klon von `n4o-rse/n4o-kg-profile` zur Verifikation der drei Bugfixes. `fdo-squirrel`, `fdo-squirrel-spec`, `fdo-squirrel-md-generator`, `fdo-3d-packager` und `fdo-git-packager` wurden in diesem Durchgang nicht erneut geprüft — deren Abschnitte sind unverändert aus dem Stand vom 03.09.2026 übernommen und entsprechend markiert. Bei Widersprüchen zwischen diesem Dokument und einem `PRIMER.md` gilt das jeweilige `PRIMER.md` des Repos als genauer — dieses Dokument ist die Zusammenfassung, nicht die Quelle der Wahrheit.*
+*Hinweis: Dieser Stand basiert auf `fdo-squirrel-registry`s, `fdox-squirrel-n4o-collection`s und `fdo-squirrel-spec`s live stehenden `PRIMER.md`/Repo-Inhalten am 04.09.2026, plus einem frischen Klon von `n4o-rse/n4o-kg-profile` zur Verifikation der drei Bugfixes. `fdo-squirrel`, `fdo-squirrel-md-generator`, `fdo-3d-packager` und `fdo-git-packager` wurden in diesem Durchgang nicht erneut geprüft — deren Abschnitte sind unverändert aus dem Stand vom 03.09.2026 übernommen und entsprechend markiert. Bei Widersprüchen zwischen diesem Dokument und einem `PRIMER.md` gilt das jeweilige `PRIMER.md` des Repos als genauer — dieses Dokument ist die Zusammenfassung, nicht die Quelle der Wahrheit.*

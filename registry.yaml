@@ -69,10 +69,10 @@ repos:
     url: https://github.com/FDOx-squirrel/fdo-squirrel-spec
     role: >-
       Documentation: renders a ReSpec page from copies of the schema,
-      RDF crosswalk and classification rules in fdo-squirrel. Publishes
-      no RDF of its own.
+      RDF crosswalk, classification rules and two real worked examples.
+      Publishes no RDF of its own.
     status_level: in-progress
-    status: "First step built, docs/index.html renders offline"
+    status: "S1-S3 done: pinned to fdo-squirrel v0.3.1, two real worked examples"
     produces:
       - artifact: docs/index.html
         format: HTML (ReSpec)
@@ -82,6 +82,15 @@ repos:
         artifact: >-
           MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml,
           classification_rules.yaml, package_source.py
+        format: YAML/Python
+        note: "Pinned to tag v0.3.1, not main (S3, 2026-09-04)."
+      - from: fdo-squirrel-registry
+        artifact: two harvested fdo-metadata.ttl records (one SoftwareFDO, one 3DDataFDO)
+        format: RDF/Turtle
+        note: >-
+          Pulled fresh from main on every fetch (S2, 2026-09-04). One of the
+          two is invalid Turtle as harvested (missing @prefix); repaired in
+          memory only at render time, never on disk.
         format: YAML/Python
         note: >-
           Snapshotted locally, then rendered offline against it.

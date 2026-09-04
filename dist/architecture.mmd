@@ -14,6 +14,7 @@ flowchart LR
 
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
+    fdo_squirrel_registry -- "two harvested fdo-metadata.ttl record..." --> fdo_squirrel_spec
     fdo_squirrel -- "fdo-metadata.ttl (of packages harvest..." --> fdo_squirrel_registry
     fdo_squirrel_registry -- "dist/fdo-registry-n4o.ttl" --> fdox_squirrel_n4o_collection
     n4o_kg_profile -- "profile/" --> fdox_squirrel_n4o_collection

@@ -44,6 +44,7 @@ flowchart LR
 
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
+    fdo_squirrel_registry -- "two harvested fdo-metadata.ttl record..." --> fdo_squirrel_spec
     fdo_squirrel -- "fdo-metadata.ttl (of packages harvest..." --> fdo_squirrel_registry
     fdo_squirrel_registry -- "dist/fdo-registry-n4o.ttl" --> fdox_squirrel_n4o_collection
     n4o_kg_profile -- "profile/" --> fdox_squirrel_n4o_collection
@@ -97,10 +98,10 @@ flowchart LR
         </tr>
         <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel-spec">fdo-squirrel-spec</a></td>
           <td>FDOx-squirrel</td>
-          <td>Documentation: renders a ReSpec page from copies of the schema, RDF crosswalk and classification rules in fdo-squirrel. Publishes no RDF of its own.</td>
-          <td><span class="badge status-progress">in progress</span><br><span class="status-note">First step built, docs/index.html renders offline</span></td>
+          <td>Documentation: renders a ReSpec page from copies of the schema, RDF crosswalk, classification rules and two real worked examples. Publishes no RDF of its own.</td>
+          <td><span class="badge status-progress">in progress</span><br><span class="status-note">S1-S3 done: pinned to fdo-squirrel v0.3.1, two real worked examples</span></td>
           <td>docs/index.html (HTML (ReSpec))</td>
-          <td>from fdo-squirrel: MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml, classification_rules.yaml, package_source.py (YAML/Python)</td>
+          <td>from fdo-squirrel: MD.cff-schema.yaml, crosswalk_md_cff_to_rdf.yaml, classification_rules.yaml, package_source.py (YAML/Python); from fdo-squirrel-registry: two harvested fdo-metadata.ttl records (one SoftwareFDO, one 3DDataFDO) (YAML/Python)</td>
         </tr>
         <tr><td><a href="https://github.com/FDOx-squirrel/fdo-squirrel-registry">fdo-squirrel-registry</a></td>
           <td>FDOx-squirrel</td>
