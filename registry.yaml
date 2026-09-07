@@ -29,10 +29,11 @@ repos:
       Generates MD.cff and CITATION.cff for an FDO package.
     status_level: done
     status: >-
-      v0.1 live on GitHub Pages, browser-verified: form + live validation,
-      round-trip loading (MD.cff or a whole bundle ZIP), a client-side ZIP
-      structural pre-check, a spatial-extent map, and Wikidata/OSM
-      coordinate lookup. Static site, no server, no build step at runtime.
+      v0.1 live at https://fdox-squirrel.github.io/fdo-squirrel-md-generator/,
+      browser-verified: form + live validation, round-trip loading (MD.cff
+      or a whole bundle ZIP), a client-side ZIP structural pre-check, a
+      spatial-extent map, and Wikidata/OSM coordinate lookup. Static site,
+      no server, no build step at runtime.
     produces:
       - artifact: MD.cff
         format: YAML
