@@ -12,6 +12,7 @@ flowchart LR
     fdo_3d_packager["fdo-3d-packager (FDOx-squirrel)"]
     fdo_git_packager["fdo-git-packager (FDOx-squirrel)"]
 
+    fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_md_generator
     fdo_squirrel_md_generator -. "MD.cff" .-> fdo_squirrel
     fdo_squirrel -- "MD.cff-schema.yaml" --> fdo_squirrel_spec
     fdo_squirrel_registry -- "two harvested fdo-metadata.ttl record..." --> fdo_squirrel_spec

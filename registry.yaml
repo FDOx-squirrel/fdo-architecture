@@ -27,14 +27,27 @@ repos:
     url: https://github.com/FDOx-squirrel/fdo-squirrel-md-generator
     role: >-
       Generates MD.cff and CITATION.cff for an FDO package.
-    status_level: in-progress
+    status_level: done
     status: >-
-      Decisions done, no code yet.
+      v0.1 live on GitHub Pages, browser-verified: form + live validation,
+      round-trip loading (MD.cff or a whole bundle ZIP), a client-side ZIP
+      structural pre-check, a spatial-extent map, and Wikidata/OSM
+      coordinate lookup. Static site, no server, no build step at runtime.
     produces:
-      - artifact: MD.cff, CITATION.cff
+      - artifact: MD.cff
         format: YAML
-        note: not yet built
-    consumes: []
+        note: validated live against fdo-squirrel's own schema (see consumes)
+      - artifact: CITATION.cff
+        format: YAML
+        note: derived automatically, only for fdo_type fdo:3DDataFDO
+    consumes:
+      - from: fdo-squirrel
+        artifact: MD.cff-schema.yaml
+        format: YAML (JSON Schema, draft 2020-12)
+        note: >-
+          Live-fetched client-side from fdo-squirrel's master branch on
+          every page load — the one deliberate exception to vendoring
+          schemas (this repo's own PRIMER.md A3/A4).
 
   - id: fdo-squirrel
     kind: repo
@@ -57,7 +70,11 @@ repos:
         artifact: MD.cff, CITATION.cff
         format: YAML
         note: >-
-          Assumed link, not verified — see PRIMER.md Teil D.
+          Schema-compatible by construction (md-generator live-fetches
+          this exact schema, see its own entry) — an MD.cff produced there
+          being run through fdo-squirrel's actual ingest, end to end, is
+          still unverified. fdo-3d-packager's build_fdo step (below) does
+          this same round trip for its own generated files, successfully.
       - from: null
         artifact: FDO package (ZIP)
         format: "model/data files + metadata"
@@ -199,9 +216,11 @@ repos:
     role: >-
       Sketchfab or local 3D model -> finished fdo:3DDataFDO package in the
       fdo-squirrel layout (viewer included).
-    status_level: in-progress
+    status_level: done
     status: >-
-      Skeleton done (seven steps), implementation not started.
+      v0.1, full pipeline live (fetch, convert, nexus, mdcff, bundle,
+      build_fdo) plus batch-fetch and CI. build_fdo has run a real bundle
+      through fdo-squirrel successfully (S7); no Zenodo DOI minted yet.
     produces:
       - artifact: fdo:3DDataFDO package (ZIP)
         format: RDF/Turtle + binary data
@@ -211,8 +230,10 @@ repos:
         artifact: MD.cff/CITATION.cff generation, bundling
         format: Python
         note: >-
-          Integration path (pip from GitHub vs. submodule vs. external
-          path) still open — same question as fdo-git-packager.
+          Resolved 2026-09-07: pinned pip dependency straight from GitHub
+          (requirements.txt, commit 504b7af), same pattern and reasoning
+          as fdo-squirrel-registry's own S8. fdo-git-packager still has
+          this question open.
       - from: null
         artifact: Sketchfab API or local 3D file
         format: glTF/GLB etc.

@@ -256,6 +256,34 @@ gebracht (die drei alten Fehler behoben, zwei Repos ergänzt, `n4o-kg-profile`
 neu als externes System), `FDOx-Squirrel-Plan.md` komplett neu geschrieben
 mit dem Stand aller acht Familienrepos plus `n4o-kg-profile`.
 
+### Erledigt 2026-09-07, `fdo-squirrel-md-generator` v0.1 + `fdo-3d-packager` S0–S9
+
+Zwei Familienmitglieder seit dem letzten Stand substanziell weitergekommen,
+`registry.yaml`/`FDOx-Squirrel-Plan.md` entsprechend nachgezogen:
+
+- **`fdo-squirrel-md-generator`**: von `status_level: in-progress`
+  ("Decisions done, no code yet") auf `done` — v0.1 live, über fünf
+  Feedback-Runden im echten Browser verifiziert (siehe dessen eigenes
+  `PRIMER.md` A6–A10). `consumes` war vorher leer; jetzt die tatsächliche
+  Kante zu `fdo-squirrel` (Live-Fetch von `MD.cff-schema.yaml`) ergänzt.
+- **`fdo-3d-packager`**: von `status_level: in-progress` ("Skeleton done
+  (seven steps), implementation not started") auf `done` — komplette
+  Pipeline (`fetch`→`build_fdo`, S0–S9), inklusive eines erfolgreichen
+  echten Rundlaufs durch `fdo-squirrel` (S7). Die vorher offene
+  Einbindungsfrage (`consumes.note`) ist jetzt konkret beantwortet:
+  gepinnte `pip`-Abhängigkeit von GitHub, Commit `504b7af`.
+- **`fdo-squirrel`**s `consumes`-Notiz zu `fdo-squirrel-md-generator` von
+  "Assumed link, not verified" auf einen genaueren, weiterhin ehrlichen
+  Stand aktualisiert (Schema-Kompatibilität ist durch den Live-Fetch
+  gegeben, ein tatsächlicher Ingest-Rundlauf für ein dort erzeugtes
+  `MD.cff` steht — anders als bei `fdo-3d-packager` — noch aus).
+
+Quelle: frischer Klon beider Repos, `fdo-3d-packager` zusätzlich per
+`requirements.txt`/`step_build_fdo.py`-Lektüre auf die tatsächliche
+`fdo-squirrel`-Einbindung hin geprüft, nicht nur aus der `PRIMER.md`
+übernommen. `python main.py --strict` danach: weiterhin 9 Einträge, 0
+Fehler, 0 Warnungen; `dist/architecture.mmd`/`docs/index.html` neu gebaut.
+
 ## S3 — Englisch + Status-Ampel
 
 **Ziel:** die Seite und `registry.yaml`s `role`/`status`-Werte tatsächlich
